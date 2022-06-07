@@ -1,10 +1,9 @@
 <component name="libraryTable">
   <library name="javax">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../../javax.servlet" />
+      <root url="jar://$PROJECT_DIR$/lib/fastjson-1.2.76.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
-    <jarDirectory url="file://$PROJECT_DIR$/../../javax.servlet" recursive="false" />
   </library>
 </component>
