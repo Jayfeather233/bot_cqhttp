@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="qq bot:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/qq_bot_jar</output-path>
+    <root id="archive" name="qq bot.jar">
+      <element id="module-output" name="qq bot" />
+      <element id="library" level="project" name="javax" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/fastjson-1.2.76.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
