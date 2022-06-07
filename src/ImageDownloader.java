@@ -4,6 +4,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+/*
+    test code
+    never used
+*/
 public class ImageDownloader {
     public static void main(String[] args) throws IOException {
 
