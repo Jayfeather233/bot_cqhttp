@@ -1,3 +1,5 @@
+package HTTPConnect;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +18,7 @@ public class ImageDownloader {
         InputStream inputStream = uc.getInputStream();
 
         FileOutputStream out = new FileOutputStream("\"D:\\QQ bot\\tmp.jpg\"");
-        int j = 0;
+        int j;
         while ((j = inputStream.read()) != -1) {
             out.write(j);
         }

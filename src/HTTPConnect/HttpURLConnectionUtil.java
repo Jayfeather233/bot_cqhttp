@@ -1,3 +1,5 @@
+package HTTPConnect;
+
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.*;
@@ -6,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author riemann
- * @date 2019/05/24 23:42
+ * @date  2019/05/24 23:42
  */
 public class HttpURLConnectionUtil {
 
@@ -40,8 +42,8 @@ public class HttpURLConnectionUtil {
                 //获取返回的数据
                 is = connection.getInputStream();
                 if (null != is) {
-                    br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                    String temp = null;
+                    br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+                    String temp;
                     while (null != (temp = br.readLine())) {
                         result.append(temp);
                     }
@@ -77,7 +79,6 @@ public class HttpURLConnectionUtil {
      *
      * @param ADD_URL 连接
      * @param obj     参数
-     * @return
      */
     public static StringBuffer doPost(String ADD_URL, JSONObject obj) {
 
@@ -93,11 +94,7 @@ public class HttpURLConnectionUtil {
             connection.setInstanceFollowRedirects(true);
             if(obj!=null) connection.setRequestProperty("Content-Type", "application/json;");
 
-            try{
-                connection.connect();
-            }catch(ConnectException e){
-                throw e;
-            }
+            connection.connect();
 
             //POST请求
             DataOutputStream out = new DataOutputStream(
@@ -111,7 +108,7 @@ public class HttpURLConnectionUtil {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     connection.getInputStream()));
             String lines;
-            StringBuffer sb = new StringBuffer("");
+            StringBuffer sb = new StringBuffer();
             while ((lines = reader.readLine()) != null) {
                 lines = new String(lines.getBytes(), StandardCharsets.UTF_8);
                 sb.append(lines);
@@ -121,10 +118,6 @@ public class HttpURLConnectionUtil {
             // 断开连接
             connection.disconnect();
             return sb;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

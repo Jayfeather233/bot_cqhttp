@@ -1,3 +1,5 @@
+package Game;
+
 public class guessPlay {
     public static String play(String msg, int stdAns) {
         int u = 0;

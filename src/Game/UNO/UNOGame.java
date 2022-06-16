@@ -1,3 +1,6 @@
+package Game.UNO;
+
+import Main.Main;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
@@ -103,7 +106,6 @@ public class UNOGame implements Runnable {
     public void join(long ID) {
         if (!Main.UNOJoin(ID, gameID)) {
             sendPrivateMsg(ID, "您在其他群有游戏进行。");
-            return;
         } else {
             playerID.add(ID);
             playerCards.add(new ArrayList<>());
@@ -235,13 +237,13 @@ public class UNOGame implements Runnable {
     @Override
     public void run() {
         begin();
-        int TLE = 0;
+        int TLE;
         String bufferInput;
         long bufferID;
         if(playerID.size()<=1){
             end("人数不足2人，开始失败");
             return;
-        }
+        }else sendGroupMsg("UNO游戏开始");
         hasNextInput=false;
         while (!isEnd) {
 
@@ -331,7 +333,7 @@ public class UNOGame implements Runnable {
                     join(bufferID);
                 }
                 needOutput = false;
-            } else if (bufferInput.indexOf(".play") == 0) {
+            } else if (bufferInput.indexOf(".Game.play") == 0) {
                 if (playerID.get(nowPlayer) != bufferID) {
                     sendPrivateMsg(bufferID, "不是你的回合");
                     needOutput = false;

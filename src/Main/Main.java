@@ -1,5 +1,14 @@
+package Main;
+
+import Game.Deliver.DeliverMain;
+import Game.UNO.UNOGame;
+import Game.UNO.UNOMain;
+import Game.play;
+import HTTPConnect.GetImage621;
+import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import notice.NoticeMain;
 
 import java.util.*;
 
@@ -7,10 +16,26 @@ import java.util.*;
 public class Main {
     private static final Set<Long> friendSet=new HashSet<>();
 
-    private static final Map<Long,play> map= new HashMap<>();
+    public static Set<Long> getFriendSet() {
+        return friendSet;
+    }
 
-    private static final Map<Long,UNOGame> unoGameMap=new HashMap<>();
+    private static final Map<Long, play> map= new HashMap<>();
+
+    private static final Map<Long, UNOGame> unoGameMap=new HashMap<>();
+
+    public static Map<Long, UNOGame> getUnoGameMap() {
+        return unoGameMap;
+    }
+
     private static final Map<Long,Long> unoIDMap=new HashMap<>();
+
+    public static Map<Long, Long> getUnoIDMap() {
+        return unoIDMap;
+    }
+
+    private static final DeliverMain deliver = new DeliverMain();
+
     private static final Map<Long,String> userName=new HashMap<>();
     public synchronized static void endThread(long user_id) {
         map.remove(user_id);
@@ -64,28 +89,7 @@ public class Main {
             }
         }
         if(post_type.equals("notice")){
-            if(J_input.containsKey("sub_type")&&J_input.getString("sub_type").equals("poke")){
-                if(J_input.getLong("target_id")==1573079756&&user_id!=1783241911&&user_id!=1318920100) {
-                    System.out.println("poke");
-                    if (group_id == -1) {
-                        JSONObject J = new JSONObject();
-                        J.put("user_id", user_id);
-                        J.put("message", "[CQ:poke,qq=" + user_id + "]");
-                        Main.setNextSender("send_private_msg", J);
-                    } else {
-                        JSONObject J = new JSONObject();
-                        J.put("group_id", group_id);
-                        J.put("message", "[CQ:poke,qq=" + user_id + "]");
-                        setNextSender("send_group_msg", J);
-                        if(new Random().nextInt(3)==1){
-                            J = new JSONObject();
-                            J.put("group_id", group_id);
-                            J.put("message", "别戳我TAT");
-                            setNextSender("send_group_msg", J);
-                        }
-                    }
-                }
-            }
+            NoticeMain.process(J_input,user_id,group_id);
         }
         if(post_type==null||message==null||message_type==null||user_id==0) return;//忽略不感兴趣的EVENT
         if(!post_type.equals("message")) return;
@@ -108,7 +112,7 @@ public class Main {
             if(message_type.equals("group")) {
                 JSONObject J = new JSONObject();
                 J.put("group_id", group_id);
-                J.put("message","[CQ:at,qq=943771598] 【 CQ:at,qq=1219650440 】");
+                J.put("message","啊对对对");
                 setNextSender("send_group_msg", J);
             }
         }
@@ -117,7 +121,7 @@ public class Main {
                 if(group_id==1011383394||group_id==118627232||group_id==931369311||group_id==614981678){
                     JSONObject J=new JSONObject();
                     J.put("group_id", group_id);
-                    J.put("message",GetImage621.GetImage(message.substring(3)));
+                    J.put("message", GetImage621.GetImage(message.substring(3)));
                     setNextSender("send_group_msg",J);
                 }
             }
@@ -130,76 +134,17 @@ public class Main {
                     setNextSender("send_group_msg",J);
                 }
             }
-        }else if(message.equals("uno.help")){
-            JSONObject J=new JSONObject();
-            J.put("message","uno.new 创建一个群UNO游戏\nuno.join 加入当前群游戏\nuno.leave 离开\nuno.start 开始\nuno.order 出牌顺序\nuno.resend 重新发送消息\nuno.help 帮助");
-            if(message_type.equals("group")){
-                J.put("group_id", group_id);
-                setNextSender("send_group_msg",J);
-            }else{
-                J.put("user_id", user_id);
-                setNextSender("send_msg",J);
-            }
-        }else if(message_type.equals("private")&&unoIDMap.containsKey(user_id)){
-            if(message.indexOf("uno.")!=0){
-                message="uno.play "+message;
-            }
-        }
-        if(message.indexOf("uno.")==0){
-            if(message_type.equals("group")) {
-                switch (message) {
-                    case "uno.new":
-                        if (!unoGameMap.containsKey(group_id)) {
-                            unoGameMap.put(group_id, new UNOGame(group_id));
-                        } else {
-                            JSONObject J = new JSONObject();
-                            J.put("group_id", group_id);
-                            J.put("message", "本群已存在一个进行中的游戏，使用uno.join来加入");
-                            setNextSender("send_group_msg", J);
-                        }
-                        break;
-                    case "uno.join":
-                        if (!unoGameMap.containsKey(group_id)) {
-                            JSONObject J = new JSONObject();
-                            J.put("group_id", group_id);
-                            J.put("message", "本群不存在一个进行中的游戏，使用uno.new来新建一个");
-                            setNextSender("send_group_msg", J);
-                        } else {
-                            if (friendSet.contains(user_id)) unoGameMap.get(group_id).join(user_id);
-                            else {
-                                JSONObject J = new JSONObject();
-                                J.put("group_id", group_id);
-                                J.put("message", "[CQ:at,qq=" + user_id + "] 请先添加bot好友");
-                                setNextSender("send_group_msg", J);
-                            }
-                        }
-                        break;
-                    case "uno.start":
-                        if (!unoGameMap.containsKey(group_id)) {
-                            JSONObject J = new JSONObject();
-                            J.put("group_id", group_id);
-                            J.put("message", "本群不存在一个进行中的游戏，使用uno.new来新建一个");
-                            setNextSender("send_group_msg", J);
-                        } else {
-                            if (!unoGameMap.get(group_id).isBegin()) new Thread(unoGameMap.get(group_id)).start();
-                            else {
-                                JSONObject J = new JSONObject();
-                                J.put("group_id", group_id);
-                                J.put("message", "本群已存在一个进行中的游戏，使用uno.join来加入");
-                                setNextSender("send_group_msg", J);
-                            }
-                        }
-                        break;
-                    default:
-                        if (unoGameMap.containsKey(group_id))
-                            unoGameMap.get(group_id).setNextInput(user_id, message.substring(3));
-                        break;
-                }
-            }else{
-                if(unoIDMap.containsKey(user_id)) {
-                    unoGameMap.get(unoIDMap.get(user_id)).setNextInput(user_id, message.substring(3));
-                }
-            }
+        }else if(message.startsWith("uno.")){
+            UNOMain.process(message.substring(4),message_type,user_id,group_id);
+        }else if(message_type.equals("private")&&getUnoIDMap().containsKey(user_id)){
+            if(message.startsWith("uno.")) UNOMain.process(message.substring(4),message_type,user_id,group_id);
+            else UNOMain.process(message,message_type,user_id,group_id);
+        }else if(message.startsWith("外送")){
+            if(message.equals("外送")) deliver.process("",message_type,user_id,group_id);
+            else if(message.equals("外送10次")) deliver.process("11",message_type,user_id,group_id);
+        }else if(message.startsWith("deliver")){
+            if(message.equals("deliver")) deliver.process("",message_type,user_id,group_id);
+            else if(message.equals("deliver 10 times")) deliver.process("11",message_type,user_id,group_id);
         }
     }
     public synchronized static StringBuffer setNextSender(String msg_type,JSONObject msg) {
@@ -211,12 +156,23 @@ public class Main {
             return null;
         }
     }
+    public synchronized static StringBuffer setNextSender(String msg_type, long user_id, long group_id, String msg) {
+        JSONObject J = new JSONObject();
+        J.put("message", msg);
+        if (msg_type.equals("group")) {
+            J.put("group_id", group_id);
+            return setNextSender("send_group_msg", J);
+        } else {
+            J.put("user_id", user_id);
+            return setNextSender("send_msg", J);
+        }
+    }
     public static void main(String[] args) throws InterruptedException {
         Go_Listener Listen = new Go_Listener();
         Thread R1 = new Thread(Listen);
         R1.start();
         System.out.println("end.");
-        JSONObject J_input=null;
+        JSONObject J_input;
         boolean flg=true;
         JSONArray JA=null;
         while(flg) {
@@ -227,7 +183,7 @@ public class Main {
             } catch (NullPointerException e) {
                 flg=true;
             }
-            Thread.sleep(1000);
+            Thread.sleep(10000);
         }
         for (Object o : JA) {
             friendSet.add(((JSONObject) o).getLong("user_id"));

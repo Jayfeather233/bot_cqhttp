@@ -1,3 +1,5 @@
+package HTTPConnect;
+
 public class GetImage621 {
     static int retry=0;
 
@@ -22,17 +24,17 @@ public class GetImage621 {
         return quest;
     }
 
-    static String GetImage(String input){
+    public static String GetImage(String input){
         if(input.equals(".default")){
             return "如未指定tag，默认加上eeveelution\n如未指定favcount或score，默认加上favcount:>400 score:>200\n如未指定以下tags，默认不搜索gore,anthro,human";
         }
         StringBuilder quest=dealInput(input);
 
         String answer;
-        answer=HttpURLConnectionUtil.doGet("https://e621.net/posts?tags="+quest);
+        answer= HttpURLConnectionUtil.doGet("https://e621.net/posts?tags="+quest);
         int pos=answer.indexOf("data-id");
         pos=answer.indexOf("data-id",pos+1);
-        int id=0;
+        int id;
         try {
             id = Integer.parseInt(answer.substring(pos + 9, answer.indexOf(' ', pos + 1) - 1));
         }catch(NumberFormatException e){
@@ -41,7 +43,7 @@ public class GetImage621 {
         pos=answer.indexOf("data-fav-count");
         int fav_count=Integer.parseInt(answer.substring(pos+16,answer.indexOf(' ',pos)-1));
 
-        answer=HttpURLConnectionUtil.doGet("https://e621.net/posts/"+id);
+        answer= HttpURLConnectionUtil.doGet("https://e621.net/posts/"+id);
 
         pos=answer.indexOf("data-score");
 
