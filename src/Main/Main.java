@@ -3,7 +3,7 @@ package Main;
 import Game.Deliver.DeliverMain;
 import Game.UNO.UNOGame;
 import Game.UNO.UNOMain;
-import Game.play;
+import Game.GuessGame.play;
 import HTTPConnect.GetImage621;
 import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -194,7 +194,6 @@ public class Main {
         }
         for (Object o : JA) {
             friendSet.add(((JSONObject) o).getLong("user_id"));
-            System.out.println("set add" + ((JSONObject) o).getLong("user_id"));
         }
 
     }

@@ -51,7 +51,6 @@ public class DeliverMain {
     }
 
     public void process(String message, String message_type, long user_id, long group_id) {
-        System.out.println(message);
         if (message_type.equals("private")) return;
         int t;
         if (message.equals("")) {

@@ -1,4 +1,4 @@
-package Game;
+package Game.GuessGame;
 
 public class guessPlay {
     public static String play(String msg, int stdAns) {

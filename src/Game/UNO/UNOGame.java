@@ -332,7 +332,7 @@ public class UNOGame implements Runnable {
                     join(bufferID);
                 }
                 needOutput = false;
-            } else if (bufferInput.indexOf(".Game.play") == 0) {
+            } else if (bufferInput.indexOf(".Game.GuessGame.play") == 0) {
                 if (playerID.get(nowPlayer) != bufferID) {
                     sendPrivateMsg(bufferID, "不是你的回合");
                     needOutput = false;
