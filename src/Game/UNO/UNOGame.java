@@ -9,20 +9,56 @@ import java.util.Random;
 import java.util.List;
 
 public class UNOGame implements Runnable {
+    private static final int CARDS_LENGTH = 108;
+    public final long gameID;
     String[] color;
     String[] name;
-    public final long gameID;
-    private static final int CARDS_LENGTH = 108;
-    private List<Long> playerID;
+    boolean hasNextInput = false;
+    boolean isEnd = false;
+    boolean colorChoosing = false;
+    boolean needOutput = true;
+    boolean isDrawn = false;
+    String nextInput;
+    long nextID;
+    private final List<Long> playerID;
     private int[] cards;
     private int top;
     private int order;
-    private List<List<Integer>> playerCards;
+    private final List<List<Integer>> playerCards;
     private boolean isBegin = false;
     private int lastCard;
     private int nextColor = -1;
     private int needDraw;
     private int nowPlayer;
+
+    public UNOGame(long gameID) {
+        this.gameID = gameID;
+        playerID = new ArrayList<>();
+        playerCards = new ArrayList<>();
+        color = new String[5];
+        color[0] = "红";
+        color[1] = "黄";
+        color[2] = "蓝";
+        color[3] = "绿";
+        color[4] = "黑";
+        name = new String[14];
+        name[0] = "0  ";
+        name[1] = "1  ";
+        name[2] = "2  ";
+        name[3] = "3  ";
+        name[4] = "4  ";
+        name[5] = "5  ";
+        name[6] = "6  ";
+        name[7] = "7  ";
+        name[8] = "8  ";
+        name[9] = "9  ";
+        name[10] = "翻转";
+        name[11] = "禁止";
+        name[12] = "+2  ";
+        name[13] = "改色";
+
+        sendGroupMsg("UNO游戏创建成功");
+    }
 
     private void shuffle() {
         Random r = new Random();
@@ -64,7 +100,7 @@ public class UNOGame implements Runnable {
         if (lastCard == 4 * 14 + 1) {
             return (cardID == lastCard);
         }
-        if (lastCard % 14 == 12 && needDraw>0) {
+        if (lastCard % 14 == 12 && needDraw > 0) {
             return (cardID % 14 == 12);
         }
         if (cardID / 14 == 4) return true;
@@ -95,11 +131,11 @@ public class UNOGame implements Runnable {
 
     public String getOrder() {
         StringBuilder sb = new StringBuilder("出牌顺序：\n");
-        int bf=nowPlayer;
-        do{
+        int bf = nowPlayer;
+        do {
             sb.append(Main.getName(playerID.get(bf))).append("有").append(playerCards.get(bf).size()).append("张牌\n");
-            bf=(bf+order+playerID.size())%playerID.size();
-        }while(bf!=nowPlayer);
+            bf = (bf + order + playerID.size()) % playerID.size();
+        } while (bf != nowPlayer);
         return String.valueOf(sb);
     }
 
@@ -174,39 +210,10 @@ public class UNOGame implements Runnable {
         top++;
     }
 
-    public UNOGame(long gameID) {
-        this.gameID = gameID;
-        playerID = new ArrayList<>();
-        playerCards = new ArrayList<>();
-        color = new String[5];
-        color[0] = "红";
-        color[1] = "黄";
-        color[2] = "蓝";
-        color[3] = "绿";
-        color[4] = "黑";
-        name = new String[14];
-        name[0] = "0  ";
-        name[1] = "1  ";
-        name[2] = "2  ";
-        name[3] = "3  ";
-        name[4] = "4  ";
-        name[5] = "5  ";
-        name[6] = "6  ";
-        name[7] = "7  ";
-        name[8] = "8  ";
-        name[9] = "9  ";
-        name[10] = "翻转";
-        name[11] = "禁止";
-        name[12] = "+2  ";
-        name[13] = "改色";
-
-        sendGroupMsg("UNO游戏创建成功");
-    }
-
     private void end(String msg) {
         sendGroupMsg(msg);
         for (long u : playerID) {
-            sendPrivateMsg(u,"游戏结束");
+            sendPrivateMsg(u, "游戏结束");
             Main.UNOLeave(u);
         }
         Main.endUNOGame(gameID);
@@ -217,14 +224,6 @@ public class UNOGame implements Runnable {
         long ID = playerID.get(pos);
         end("[CQ:at,qq=" + ID + "] 赢了！");
     }
-
-    boolean hasNextInput = false;
-    boolean isEnd = false;
-    boolean colorChoosing = false;
-    boolean needOutput = true;
-    boolean isDrawn = false;
-    String nextInput;
-    long nextID;
 
     public void setNextInput(long ID, String input) {
         nextID = ID;
@@ -240,11 +239,11 @@ public class UNOGame implements Runnable {
         int TLE;
         String bufferInput;
         long bufferID;
-        if(playerID.size()<=1){
+        if (playerID.size() <= 1) {
             end("人数不足2人，开始失败");
             return;
-        }else sendGroupMsg("UNO游戏开始");
-        hasNextInput=false;
+        } else sendGroupMsg("UNO游戏开始");
+        hasNextInput = false;
         while (!isEnd) {
 
             if (needOutput) {
@@ -259,7 +258,7 @@ public class UNOGame implements Runnable {
                     cardName += "(上一名玩家已摸牌)";
                 }
 
-                sendGroupMsg("上一张牌是" + cardName + "\n现在是[CQ:at,qq=" + playerID.get(nowPlayer) + "] 出牌，他还剩"+playerCards.get(nowPlayer).size()+"张牌");
+                sendGroupMsg("上一张牌是" + cardName + "\n现在是[CQ:at,qq=" + playerID.get(nowPlayer) + "] 出牌，他还剩" + playerCards.get(nowPlayer).size() + "张牌");
 
                 playerCards.get(nowPlayer).sort(Comparator.comparingInt(o -> o));
 
@@ -289,7 +288,7 @@ public class UNOGame implements Runnable {
             needOutput = true;
 
             TLE = 0;
-            while (!hasNextInput&&!isEnd) {
+            while (!hasNextInput && !isEnd) {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {
@@ -310,7 +309,7 @@ public class UNOGame implements Runnable {
                     TLE = 0;
                 }
             }
-            if(isEnd) return;
+            if (isEnd) return;
             hasNextInput = false;
             bufferInput = nextInput;
             bufferID = nextID;
@@ -318,11 +317,11 @@ public class UNOGame implements Runnable {
                 needOutput = false;
                 continue;
             }
-            if(bufferInput.equals(".resend")){
+            if (bufferInput.equals(".resend")) {
                 continue;
-            }else if(bufferInput.equals(".order")){
+            } else if (bufferInput.equals(".order")) {
                 sendGroupMsg(getOrder());
-            }else if (bufferInput.equals(".leave")) {
+            } else if (bufferInput.equals(".leave")) {
                 if (leave(bufferID) == -1) sendGroupMsg("[CQ:at,qq=" + bufferID + "] 您不在游戏中");
                 else sendGroupMsg("[CQ:at,qq=" + bufferID + "] 退出成功");
                 needOutput = false;
@@ -376,7 +375,7 @@ public class UNOGame implements Runnable {
                         isDrawn = true;
                     } else {
                         nowPlayer = nextPlayer();
-                        isDrawn=false;
+                        isDrawn = false;
                     }
                 } else {
                     try {
@@ -395,7 +394,7 @@ public class UNOGame implements Runnable {
                             sendPrivateMsg(bufferID, "Unknown Error.");
                             needOutput = false;
                         }
-                        isDrawn=false;
+                        isDrawn = false;
                     } catch (IndexOutOfBoundsException e) {
                         sendPrivateMsg(bufferID, "ID过大");
                         needOutput = false;

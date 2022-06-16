@@ -1,36 +1,32 @@
 package Game.Deliver;
 
 import java.io.*;
-import java.sql.Time;
 import java.util.*;
 
 import static Main.Main.setNextSender;
 
-class DeliverPersonInfo {
-    Time lastDeliverTime;
-    int deliverTimes;
-}
 class DeliverItemInfo {
     String name;
     int possibility;
     int color; //0:green 1:yellow 2:purple
 }
+
 public class DeliverMain {
-    private final Map<Long, DeliverPersonInfo> deliverMap = new HashMap<>();
     private final DeliverItemInfo[] diiArray = new DeliverItemInfo[100];
-    private int totalPoss=0;
     private final Random R = new Random();
+    private int totalPoss = 0;
+
     public DeliverMain() {
         try {
             FileReader f = new FileReader("DeliverPossibility.txt");
-            Scanner S=new Scanner(f);
-            int n=S.nextInt();
-            for(int i = 0; i < n; i++){
+            Scanner S = new Scanner(f);
+            int n = S.nextInt();
+            for (int i = 0; i < n; i++) {
                 diiArray[i] = new DeliverItemInfo();
-                diiArray[i].name=S.next();
-                diiArray[i].possibility=S.nextInt();
-                diiArray[i].color=S.nextInt();
-                totalPoss+=diiArray[i].possibility;
+                diiArray[i].name = S.next();
+                diiArray[i].possibility = S.nextInt();
+                diiArray[i].color = S.nextInt();
+                totalPoss += diiArray[i].possibility;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -47,23 +43,25 @@ public class DeliverMain {
         }
         return null;
     }
-    private ArrayList<DeliverItemInfo> getDeliverItem(int t){
+
+    private ArrayList<DeliverItemInfo> getDeliverItem(int t) {
         ArrayList<DeliverItemInfo> re = new ArrayList<>();
-        for(int i=0;i<t;i++) re.add(getRandomDeliverItem());
+        for (int i = 0; i < t; i++) re.add(getRandomDeliverItem());
         return re;
     }
-    public void process(String message, String message_type, long user_id, long group_id){
+
+    public void process(String message, String message_type, long user_id, long group_id) {
         System.out.println(message);
-        if(message_type.equals("private")) return;
+        if (message_type.equals("private")) return;
         int t;
-        if(message.equals("")){
-            t=1;
-        }else t=11;
+        if (message.equals("")) {
+            t = 1;
+        } else t = 11;
 
         ArrayList<DeliverItemInfo> deliverItemArray = getDeliverItem(t);
 
         StringBuilder output = new StringBuilder("[CQ:at,qq=" + user_id + "]大嘴鸥回来啦\n");
-        for(DeliverItemInfo u : deliverItemArray){
+        for (DeliverItemInfo u : deliverItemArray) {
             switch (u.color) {
                 case 0 -> output.append("绿色 ");
                 case 1 -> output.append("黄色 ");
@@ -72,6 +70,6 @@ public class DeliverMain {
             output.append(u.name).append('\n');
         }
         output.append("以后会加图片");
-        setNextSender(message_type,user_id,group_id,String.valueOf(output));
+        setNextSender(message_type, user_id, group_id, String.valueOf(output));
     }
 }

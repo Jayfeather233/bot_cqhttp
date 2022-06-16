@@ -4,12 +4,14 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class Proc extends Thread{
-    private Socket socket;
-    public Proc (Socket socket){
-        this.socket=socket;
+class Proc extends Thread {
+    private final Socket socket;
+
+    public Proc(Socket socket) {
+        this.socket = socket;
         start();
     }
+
     @Override
     public void run() {
         try {
@@ -21,17 +23,20 @@ class Proc extends Thread{
             while (true) {
                 str = in.readLine();
                 //System.out.println("Receive: " + str);
-                if (str.length()>=1&&str.charAt(0)=='{') {
-                    NextOutputThread not=new NextOutputThread(str);
+                if (str.length() >= 1 && str.charAt(0) == '{') {
+                    NextOutputThread not = new NextOutputThread(str);
                     new Thread(not).start();
                     break;
                 }
             }
-            //System.out.println(socket + ", seesion closing....");
+            //System.out.println(socket + ", session closing....");
 
-            out.write("HTTP/1.1 200 OK" +'\n');
-            out.write("Content-Type: application/json" + '\n');
-            out.write("Content-Length: 0" +'\n'+'\n');
+            out.write("""
+                    HTTP/1.1 200 OK
+                    Content-Length: 0
+                    Content-Type: application/json
+
+                    """);
             //默认不进行快速操作，返回空的body
 
             out.flush();
@@ -43,6 +48,7 @@ class Proc extends Thread{
         }
     }
 }
+
 public class Go_Listener implements Runnable {
     @Override
     public void run() {

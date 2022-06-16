@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * @author riemann
- * @date  2019/05/24 23:42
+ * date 2019/05/24 23:42
  */
 public class HttpURLConnectionUtil {
 
@@ -24,7 +24,7 @@ public class HttpURLConnectionUtil {
         HttpURLConnection connection = null;
         InputStream is = null;
         BufferedReader br = null;
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         try {
             //创建连接
             URL url = new URL(httpUrl);
@@ -92,7 +92,7 @@ public class HttpURLConnectionUtil {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            if(obj!=null) connection.setRequestProperty("Content-Type", "application/json;");
+            if (obj != null) connection.setRequestProperty("Content-Type", "application/json;");
 
             connection.connect();
 
@@ -100,7 +100,7 @@ public class HttpURLConnectionUtil {
             DataOutputStream out = new DataOutputStream(
                     connection.getOutputStream());
 
-            if(obj!=null) out.write((obj +"\n").getBytes(StandardCharsets.UTF_8));
+            if (obj != null) out.write((obj + "\n").getBytes(StandardCharsets.UTF_8));
             out.flush();
             out.close();
 
