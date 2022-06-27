@@ -9,7 +9,9 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - Simulate the delivery system of PokémonCaféReMix.
 - Generate a fake forward message in a group.
 
-### About the files
+### About the source files
+
+The Main/Main.java is the starting point.
 
 - Main: contains Main.java and other files to distribute message.
 - Game: contains all four games' java files to process the game.
