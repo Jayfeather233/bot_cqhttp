@@ -68,7 +68,6 @@ public class DeliverMain {
             }
             output.append(u.name).append('\n');
         }
-        output.append("以后会加图片");
         setNextSender(message_type, user_id, group_id, String.valueOf(output));
     }
 }

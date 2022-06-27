@@ -92,15 +92,21 @@ public class HttpURLConnectionUtil {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            if (obj != null) connection.setRequestProperty("Content-Type", "application/json;charset:utf-8;");
+            if (obj != null) connection.setRequestProperty("Content-Type", "application/json;");
 
             connection.connect();
 
             //POST请求
             DataOutputStream out = new DataOutputStream(
                     connection.getOutputStream());
-
-            if (obj != null) out.write((obj + "\n").getBytes(StandardCharsets.UTF_8));
+/*
+f send_msg
+message_type private
+user_id 819324044
+message 中文
+end x
+*/
+            if (obj != null) out.write((obj + "\n").getBytes());
             out.flush();
             out.close();
 
