@@ -101,7 +101,6 @@ public class Main {
         if (!post_type.equals("message")) return;
         if (!message_type.equals("private") && !message_type.equals("group")) return;
 
-        message = message.toLowerCase();
         if (map.get(user_id) != null) {
             map.get(user_id).setNextMessage(message, message_type, group_id);
         } else if (message.equals(".play")) {

@@ -20,7 +20,7 @@ public class play extends Thread {
         this.group_id = group_id;
         try {
             this.user_id = user_id;
-            sendMsg("Which game do you want to Game.GuessGame.play?\n1.Guess game\n2.Hard guess game");
+            sendMsg("Which game do you want to play?\n1.Guess game\n2.Hard guess game");
             Thread.sleep(500);
             start();
         } catch (InterruptedException e) {
