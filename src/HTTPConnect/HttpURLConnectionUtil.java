@@ -92,7 +92,7 @@ public class HttpURLConnectionUtil {
             connection.setRequestMethod("POST");
             connection.setUseCaches(false);
             connection.setInstanceFollowRedirects(true);
-            if (obj != null) connection.setRequestProperty("Content-Type", "application/json;");
+            if (obj != null) connection.setRequestProperty("Content-Type", "application/json;charset:utf-8;");
 
             connection.connect();
 
@@ -110,7 +110,7 @@ public class HttpURLConnectionUtil {
             String lines;
             StringBuffer sb = new StringBuffer();
             while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), StandardCharsets.UTF_8);
+                //lines = new String(lines.getBytes(), StandardCharsets.UTF_8);
                 sb.append(lines);
             }
             //System.out.println(sb);

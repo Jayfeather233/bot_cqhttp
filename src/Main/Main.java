@@ -9,6 +9,8 @@ import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 
@@ -196,5 +198,35 @@ public class Main {
             friendSet.add(((JSONObject) o).getLong("user_id"));
         }
 
+        Scanner S=new Scanner(System.in);
+        String comma,mess;
+        while(true){
+            comma=S.next();
+            mess=S.next();
+            switch (comma) {
+                case "image", "img" -> {
+                    JSONObject J = new JSONObject();
+                    J.put("file", mess);
+                    System.out.println(setNextSender("get_image", J));
+                }
+                case "forward", "forw" -> {
+                    JSONObject J = new JSONObject();
+                    J.put("message_id", mess);
+                    System.out.println(setNextSender("get_forward_msg", J));
+                }
+                case "f" -> {
+                    String s1, s2;
+                    JSONObject J = new JSONObject();
+                    do {
+                        s1 = S.next();
+                        s2 = S.next();
+                        if (s1.equals("end")) break;
+                        J.put(s1, s2);
+                    } while (true);
+                    System.out.println(Objects.requireNonNull(setNextSender(mess, J)));
+                }
+                default -> System.out.println("unsupported");
+            }
+        }
     }
 }
