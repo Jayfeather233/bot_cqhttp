@@ -10,12 +10,14 @@ import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.awt.*;
+import java.io.*;
 import java.util.*;
 
 
 public class Main {
-    public static final int sendPort = 5700;
-    public static final int receivePort = 9808;
+    public static int sendPort;
+    public static int receivePort;
     private static final Set<Long> friendSet = new HashSet<>();
     private static final Map<Long, play> map = new HashMap<>();
     private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
@@ -178,7 +180,32 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, IOException {
+
+        File f = new File("./port.txt");
+        if(!f.exists()){
+            Scanner S = new Scanner(System.in);
+            System.out.println("Please input the send_port: ");
+            sendPort = S.nextInt();
+            System.out.println("Please input the receive_port: ");
+            receivePort = S.nextInt();
+
+            FileOutputStream fops = new FileOutputStream(f);
+            fops.write(String.valueOf(sendPort).getBytes());
+            fops.write(' ');
+            fops.write(String.valueOf(receivePort).getBytes());
+            fops.close();
+            S.close();
+            System.out.println("Now you should restart me. Quiting in 5 seconds.");
+            Thread.sleep(5000);
+            return;
+        } else {
+            Scanner S = new Scanner(f);
+            sendPort = S.nextInt();
+            receivePort = S.nextInt();
+            S.close();
+        }
+
         Go_Listener Listen = new Go_Listener();
         Thread R1 = new Thread(Listen);
         R1.start();

@@ -1,6 +1,6 @@
 # bot_cqhttp
 
-A bot based on go-cqhttp
+A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 
 ### What can it do?
 
@@ -12,5 +12,10 @@ A bot based on go-cqhttp
 ### About the files
 
 - Main: contains Main.java and other files to distribute message.
-- Game: contains all three games' java files to process the game.
+- Game: contains all four games' java files to process the game.
 - HTTPConnect: files used to connect with go-cqhttp through HTTP.
+
+### How to run the bot
+
+1. Configure and start go-cqhttp. Do open the "反向HTTP POST地址", and set your own reception port.
+2. Run the bot_cqhttp.jar. It will require send_port and receive_port at the first time to connect to go-cqhttp
