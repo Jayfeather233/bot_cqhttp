@@ -7,6 +7,7 @@ A bot based on go-cqhttp
 - Play UNO game in QQ groups.
 - Play a guess number game in group or private.
 - Simulate the delivery system of PokémonCaféReMix.
+- Generate a fake forward message in a group.
 
 ### About the files
 
