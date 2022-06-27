@@ -19,4 +19,4 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 
 1. Configure and start go-cqhttp. Do open the "反向HTTP POST地址", and set your own reception port.
 2. Go to Release Page, download and run the bot_cqhttp.jar. It will require send_port and receive_port at the first time to connect to go-cqhttp
-3. After this it will expect to run.
+3. After this it is expected to run.
