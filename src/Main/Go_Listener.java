@@ -4,6 +4,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import static Main.Main.receivePort;
+
 class Proc extends Thread {
     private final Socket socket;
 
@@ -53,7 +55,7 @@ public class Go_Listener implements Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket serverSock = new ServerSocket(9808);
+            ServerSocket serverSock = new ServerSocket(receivePort);
             System.out.println("start.");
             while (true) {//端口监听，多线程操作
                 Socket socket = serverSock.accept();

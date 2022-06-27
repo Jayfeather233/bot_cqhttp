@@ -14,6 +14,8 @@ import java.util.*;
 
 
 public class Main {
+    public static final int sendPort = 5700;
+    public static final int receivePort = 9808;
     private static final Set<Long> friendSet = new HashSet<>();
     private static final Map<Long, play> map = new HashMap<>();
     private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
@@ -157,7 +159,7 @@ public class Main {
     public synchronized static StringBuffer setNextSender(String msg_type, JSONObject msg) {
         try {
             Thread.sleep(50);//延时。在电脑QQ消息间隔过快收不到
-            return HttpURLConnectionUtil.doPost("http://127.0.0.1:5700/" + msg_type, msg);//其中5700是配置文件中的端口
+            return HttpURLConnectionUtil.doPost("http://127.0.0.1:" + sendPort + "/" + msg_type, msg);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
