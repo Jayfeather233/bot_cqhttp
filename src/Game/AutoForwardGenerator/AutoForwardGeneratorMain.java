@@ -9,7 +9,7 @@ import java.util.Scanner;
 import static Main.Main.setNextSender;
 
 public class AutoForwardGeneratorMain {
-    public static void process(String message, long group_id) {
+    public static void process(String message_type, String message, long group_id, long user_id) {
         Scanner S = new Scanner(message);
         JSONArray JA = new JSONArray();
         JSONObject J, J2;
@@ -50,10 +50,16 @@ public class AutoForwardGeneratorMain {
         }
 
         J = new JSONObject();
-        J.put("group_id", group_id);
         J.put("messages", JA);
 
-        setNextSender("send_group_forward_msg", J);
+        if(message_type.equals("group")){
+            J.put("group_id", group_id);
+            setNextSender("send_group_forward_msg", J);
+        }
+        else{
+            J.put("user_id", user_id);
+            setNextSender("send_private_forward_msg", J);
+        }
     }
 
     private static String getNameInGroup(long group_id, long user_id) {

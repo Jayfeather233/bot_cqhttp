@@ -59,7 +59,7 @@ public class DeliverMain {
 
         ArrayList<DeliverItemInfo> deliverItemArray = getDeliverItem(t);
 
-        StringBuilder output = new StringBuilder("[CQ:at,qq=" + user_id + "]大嘴鸥回来啦\n");
+        StringBuilder output = new StringBuilder("[CQ:at,qq=" + user_id + "] 大嘴鸥回来啦\n");
         for (DeliverItemInfo u : deliverItemArray) {
             switch (u.color) {
                 case 0 -> output.append("绿色 ");
@@ -68,6 +68,6 @@ public class DeliverMain {
             }
             output.append(u.name).append('\n');
         }
-        setNextSender(message_type, user_id, group_id, String.valueOf(output));
+        setNextSender(message_type, user_id, group_id, output.substring(0,output.length()-1));
     }
 }

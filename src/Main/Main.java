@@ -114,7 +114,7 @@ public class Main {
             if (message_type.equals("group")) {
                 JSONObject J = new JSONObject();
                 J.put("group_id", group_id);
-                J.put("message", "中文测试");
+                J.put("message", "中文测试[t]");
                 setNextSender("send_group_msg", J);
             }
         } else if (message.contains("蒙德里安")) {
@@ -154,7 +154,7 @@ public class Main {
             if (message.equals("deliver")) deliver.process("", message_type, user_id, group_id);
             else if (message.equals("deliver 10 times")) deliver.process("11", message_type, user_id, group_id);
         } else if (message.startsWith("转发")){
-            AutoForwardGeneratorMain.process(message.substring(2),group_id);
+            AutoForwardGeneratorMain.process(message_type,message.substring(2),group_id,user_id);
         }
     }
 
