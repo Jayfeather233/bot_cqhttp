@@ -2,15 +2,14 @@ package Main;
 
 import Game.AutoForwardGenerator.AutoForwardGeneratorMain;
 import Game.Deliver.DeliverMain;
-import Game.UNO.UNOGame;
+import Game.Guess.GuessGameMain;
+import Game.Playable;
 import Game.UNO.UNOMain;
-import Game.GuessGame.play;
 import HTTPConnect.GetImage621;
 import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import java.awt.*;
 import java.io.*;
 import java.util.*;
 
@@ -19,40 +18,11 @@ public class Main {
     public static int sendPort;
     public static int receivePort;
     private static final Set<Long> friendSet = new HashSet<>();
-    private static final Map<Long, play> map = new HashMap<>();
-    private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
-    private static final Map<Long, Long> unoIDMap = new HashMap<>();
-    private static final DeliverMain deliver = new DeliverMain();
     private static final Map<Long, String> userName = new HashMap<>();
+    private static final ArrayList<Playable> games = new ArrayList<>();
 
     public static Set<Long> getFriendSet() {
         return friendSet;
-    }
-
-    public static Map<Long, UNOGame> getUnoGameMap() {
-        return unoGameMap;
-    }
-
-    public static Map<Long, Long> getUnoIDMap() {
-        return unoIDMap;
-    }
-
-    public synchronized static void endThread(long user_id) {
-        map.remove(user_id);
-    }
-
-    public synchronized static void endUNOGame(long ID) {
-        unoGameMap.remove(ID);
-    }
-
-    public synchronized static boolean UNOJoin(long userID, long gameID) {
-        if (unoIDMap.containsKey(userID)) return false;
-        unoIDMap.put(userID, gameID);
-        return true;
-    }
-
-    public synchronized static void UNOLeave(long userID) {
-        unoIDMap.remove(userID);
     }
 
     public synchronized static String getName(long ID) {
@@ -105,12 +75,7 @@ public class Main {
         if (!post_type.equals("message")) return;
         if (!message_type.equals("private") && !message_type.equals("group")) return;
 
-        if (map.get(user_id) != null) {
-            map.get(user_id).setNextMessage(message, message_type, group_id);
-        } else if (message.equals(".play")) {
-            map.put(user_id, new play(user_id, message_type, group_id));
-            System.out.printf("%d started.\n", user_id);
-        } else if (message.equals("cntest")) {
+        if (message.equals("cntest")) {
             if (message_type.equals("group")) {
                 JSONObject J = new JSONObject();
                 J.put("group_id", group_id);
@@ -142,19 +107,12 @@ public class Main {
                     setNextSender("send_group_msg", J);
                 }
             }
-        } else if (message.startsWith("uno.")) {
-            UNOMain.process(message.substring(4), message_type, user_id, group_id);
-        } else if (message_type.equals("private") && getUnoIDMap().containsKey(user_id)) {
-            if (message.startsWith("uno.")) UNOMain.process(message.substring(4), message_type, user_id, group_id);
-            else UNOMain.process(message, message_type, user_id, group_id);
-        } else if (message.startsWith("外送")) {
-            if (message.equals("外送")) deliver.process("", message_type, user_id, group_id);
-            else if (message.equals("外送10次")) deliver.process("11", message_type, user_id, group_id);
-        } else if (message.startsWith("deliver")) {
-            if (message.equals("deliver")) deliver.process("", message_type, user_id, group_id);
-            else if (message.equals("deliver 10 times")) deliver.process("11", message_type, user_id, group_id);
-        } else if (message.startsWith("转发")){
-            AutoForwardGeneratorMain.process(message_type,message.substring(2),group_id,user_id);
+        } else {
+            for (Playable game : games) {
+                if (game.check(message_type, message, group_id, user_id)) {
+                    game.process(message_type, message, group_id, user_id);
+                }
+            }
         }
     }
 
@@ -181,6 +139,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
+
+        games.add(new UNOMain());
+        games.add(new AutoForwardGeneratorMain());
+        games.add(new DeliverMain());
+        games.add(new GuessGameMain());
 
         File f = new File("./port.txt");
         if(!f.exists()){

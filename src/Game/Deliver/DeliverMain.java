@@ -1,5 +1,7 @@
 package Game.Deliver;
 
+import Game.Playable;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,10 +13,11 @@ class DeliverItemInfo {
     int color; //0:green 1:yellow 2:purple
 }
 
-public class DeliverMain {
+public class DeliverMain implements Playable {
     private final DeliverItemInfo[] diiArray = new DeliverItemInfo[100];
     private final Random R = new Random();
     private int totalPoss = 0;
+    private final String[][] times = {{"零","一","二","三","四","五","六","七","八","九","十"},{"0","1","2","3","4","5","6","7","8","9","10"}};
 
     public DeliverMain() {
         try {
@@ -50,12 +53,18 @@ public class DeliverMain {
         return re;
     }
 
-    public void process(String message, String message_type, long user_id, long group_id) {
-        if (message_type.equals("private")) return;
+    public void process(String message_type, String message, long group_id, long user_id) {
         int t;
-        if (message.equals("")) {
-            t = 1;
-        } else t = 11;
+        if(message.contains(times[0][10])||message.contains(times[1][10])) t=11;
+        else{
+            for(int i=0;i<10;i++){
+                if(message.contains(times[0][i])||message.contains(times[1][i])){
+                    t=i;
+                    break;
+                }
+            }
+            t = 0;
+        }
 
         ArrayList<DeliverItemInfo> deliverItemArray = getDeliverItem(t);
 
@@ -69,5 +78,10 @@ public class DeliverMain {
             output.append(u.name).append('\n');
         }
         setNextSender(message_type, user_id, group_id, output.substring(0,output.length()-1));
+    }
+
+    @Override
+    public boolean check(String message_type, String message, long group_id, long user_id) {
+        return message_type.equals("group") && (message.startsWith("外送") || message.endsWith("外送"));
     }
 }

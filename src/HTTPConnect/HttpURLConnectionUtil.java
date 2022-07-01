@@ -99,13 +99,6 @@ public class HttpURLConnectionUtil {
             //POST请求
             DataOutputStream out = new DataOutputStream(
                     connection.getOutputStream());
-/*
-f send_msg
-message_type private
-user_id 819324044
-message 中文
-end x
-*/
             if (obj != null) out.write((obj + "\n").getBytes());
             out.flush();
             out.close();

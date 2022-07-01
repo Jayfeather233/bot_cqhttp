@@ -1,27 +1,51 @@
 package Game.UNO;
 
+import Game.Playable;
+
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import static Main.Main.*;
 
-public class UNOMain {
-    public static void process(String message, String message_type, long user_id, long group_id) {
-        if (message.equals("help")) {
+public class UNOMain implements Playable {
+    private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
+    private static final Map<Long, Long> unoIDMap = new HashMap<>();
+
+    public static Map<Long, UNOGame> getUnoGameMap() {
+        return unoGameMap;
+    }
+
+    public static boolean UNOJoin(long userID, long gameID) {
+        if (unoIDMap.containsKey(userID)) return false;
+        unoIDMap.put(userID, gameID);
+        return true;
+    }
+
+    public static void UNOLeave(long userID) {
+        unoIDMap.remove(userID);
+    }
+
+    public void process(String message_type, String message, long group_id, long user_id) {
+        message = message.toLowerCase();
+        if(!message.startsWith("uno.") && unoIDMap.containsKey(user_id)){
+            message = "uno.play " + message;
+        }
+        if(message.startsWith("uno.")) message = message.substring(3);
+        if (message.equals(".help")) {
             setNextSender(message_type, user_id, group_id, "uno.new 创建一个群UNO游戏\nuno.join 加入当前群游戏\nuno.leave 离开\nuno.start 开始\nuno.order 出牌顺序\nuno.resend 重新发送消息\nuno.help 帮助");
         }
-        Map<Long, UNOGame> unoGameMap = getUnoGameMap();
         Set<Long> friendSet = getFriendSet();
         if (message_type.equals("group")) {
             switch (message) {
-                case "new":
+                case ".new":
                     if (!unoGameMap.containsKey(group_id)) {
                         unoGameMap.put(group_id, new UNOGame(group_id));
                     } else {
                         setNextSender(message_type, user_id, group_id, "本群已存在一个进行中的游戏，使用uno.join来加入");
                     }
                     break;
-                case "join":
+                case ".join":
                     if (!unoGameMap.containsKey(group_id)) {
                         setNextSender(message_type, user_id, group_id, "本群不存在一个进行中的游戏，使用uno.new来新建一个");
                     } else {
@@ -31,7 +55,7 @@ public class UNOMain {
                         }
                     }
                     break;
-                case "start":
+                case ".start":
                     if (!unoGameMap.containsKey(group_id)) {
                         setNextSender(message_type, user_id, group_id, "本群不存在一个准备中的游戏，使用uno.new来新建一个");
                     } else {
@@ -46,8 +70,14 @@ public class UNOMain {
                         unoGameMap.get(group_id).setNextInput(user_id, message);
                     break;
             }
-        } else if (getUnoIDMap().containsKey(user_id)) {
-            unoGameMap.get(getUnoIDMap().get(user_id)).setNextInput(user_id, message);
+        } else if (unoIDMap.containsKey(user_id)) {
+            unoGameMap.get(unoIDMap.get(user_id)).setNextInput(user_id, message);
         }
+    }
+
+    @Override
+    public boolean check(String message_type, String message, long group_id, long user_id) {
+        message = message.toLowerCase();
+        return message.startsWith("uno.") || (message_type.equals("private") && unoIDMap.containsKey(user_id));
     }
 }

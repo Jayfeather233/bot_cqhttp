@@ -1,5 +1,6 @@
 package Game.AutoForwardGenerator;
 
+import Game.Playable;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -8,8 +9,10 @@ import java.util.Scanner;
 
 import static Main.Main.setNextSender;
 
-public class AutoForwardGeneratorMain {
-    public static void process(String message_type, String message, long group_id, long user_id) {
+public class AutoForwardGeneratorMain implements Playable {
+    @Override
+    public void process(String message_type, String message, long group_id, long user_id) {
+        message = message.substring(2);
         Scanner S = new Scanner(message);
         JSONArray JA = new JSONArray();
         JSONObject J, J2;
@@ -60,6 +63,11 @@ public class AutoForwardGeneratorMain {
             J.put("user_id", user_id);
             setNextSender("send_private_forward_msg", J);
         }
+    }
+
+    @Override
+    public boolean check(String message_type, String message, long group_id, long user_id) {
+        return message.startsWith("转发");
     }
 
     private static String getNameInGroup(long group_id, long user_id) {

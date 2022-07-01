@@ -114,6 +114,15 @@ public class UNOGame implements Runnable {
         Main.setNextSender("send_group_msg", J);
     }
 
+    private void sendAllMsg(String msg) {
+        for(long ID : playerID) {
+            JSONObject J = new JSONObject();
+            J.put("user_id", ID);
+            J.put("message", msg);
+            Main.setNextSender("send_private_msg", J);
+        }
+    }
+
     private void sendPrivateMsg(long ID, String msg) {
         JSONObject J = new JSONObject();
         J.put("user_id", ID);
@@ -140,7 +149,7 @@ public class UNOGame implements Runnable {
     }
 
     public void join(long ID) {
-        if (!Main.UNOJoin(ID, gameID)) {
+        if (!UNOMain.UNOJoin(ID, gameID)) {
             sendPrivateMsg(ID, "您在其他群有游戏进行。");
         } else {
             playerID.add(ID);
@@ -164,7 +173,7 @@ public class UNOGame implements Runnable {
         if (playerID.size() <= 1) {
             end("人数小于1人，游戏结束");
         }
-        Main.UNOLeave(ID);
+        UNOMain.UNOLeave(ID);
         return 0;
     }
 
@@ -214,9 +223,9 @@ public class UNOGame implements Runnable {
         sendGroupMsg(msg);
         for (long u : playerID) {
             sendPrivateMsg(u, "游戏结束");
-            Main.UNOLeave(u);
+            UNOMain.UNOLeave(u);
         }
-        Main.endUNOGame(gameID);
+        UNOMain.getUnoGameMap().remove(gameID);
         isEnd = true;
     }
 
@@ -257,8 +266,7 @@ public class UNOGame implements Runnable {
                 if (lastCard % 14 == 12 && needDraw == 0) {
                     cardName += "(上一名玩家已摸牌)";
                 }
-
-                sendGroupMsg("上一张牌是" + cardName + "\n现在是[CQ:at,qq=" + playerID.get(nowPlayer) + "] 出牌，他还剩" + playerCards.get(nowPlayer).size() + "张牌");
+                sendAllMsg("上一张牌是" + cardName + "\n现在是 " + Main.getName(playerID.get(nowPlayer)) + " 出牌，他还剩" + playerCards.get(nowPlayer).size() + "张牌");
 
                 playerCards.get(nowPlayer).sort(Comparator.comparingInt(o -> o));
 
@@ -321,6 +329,7 @@ public class UNOGame implements Runnable {
                 continue;
             } else if (bufferInput.equals(".order")) {
                 sendGroupMsg(getOrder());
+                needOutput = false;
             } else if (bufferInput.equals(".leave")) {
                 if (leave(bufferID) == -1) sendGroupMsg("[CQ:at,qq=" + bufferID + "] 您不在游戏中");
                 else sendGroupMsg("[CQ:at,qq=" + bufferID + "] 退出成功");
@@ -332,7 +341,7 @@ public class UNOGame implements Runnable {
                     join(bufferID);
                 }
                 needOutput = false;
-            } else if (bufferInput.indexOf(".Game.GuessGame.play") == 0) {
+            } else if (bufferInput.indexOf(".play") == 0) {
                 if (playerID.get(nowPlayer) != bufferID) {
                     sendPrivateMsg(bufferID, "不是你的回合");
                     needOutput = false;
@@ -366,7 +375,7 @@ public class UNOGame implements Runnable {
                         }
                         draw(playerID.indexOf(bufferID), needDraw);
                         sendPrivateMsg(bufferID, "手牌增加" + needDraw + "张");
-                        sendGroupMsg("[CQ:at,qq=" + bufferID + "] 已摸牌" + needDraw + "张");
+                        sendAllMsg(Main.getName(bufferID) + " 已摸牌" + needDraw + "张");
                         if (nextColor >= 0) {
                             lastCard = nextColor * 14 + 13;
                             nextColor = -1;
