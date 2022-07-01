@@ -91,7 +91,7 @@ public class Main {
             }
         } else if (message.indexOf("621") == 0) {
             if (message_type.equals("group")) {
-                if (group_id == 1011383394 || group_id == 118627232 || group_id == 931369311 || group_id == 614981678) {
+                if (group_id == 1011383394 || group_id == 118627232 || group_id == 614981678) {
                     JSONObject J = new JSONObject();
                     J.put("group_id", group_id);
                     J.put("message", GetImage621.GetImage(message.substring(3)));

@@ -7,15 +7,16 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - Play UNO game in QQ groups.
 - Play a guess number game in group or private.
 - Simulate the delivery system of PokémonCaféReMix.
-- Generate a fake forward message in a group.
+- Generate a fake forward message in a group or private.
 
 ### About the source files
 
 The Main/Main.java is the starting point.
 
-- Main: contains Main.java and other files to distribute message.
-- Game: contains all four games' java files to process the game.
-- HTTPConnect: files used to connect with go-cqhttp through HTTP.
+- src/Main: contains Main.java and other files to distribute message with go-cqhttp.
+- src/Game: contains all four games' java files to process the game.
+- src/HTTPConnect: files used to connect with go-cqhttp through HTTP.
+- lib: support for JSON.
 
 ### How to run the bot
 
