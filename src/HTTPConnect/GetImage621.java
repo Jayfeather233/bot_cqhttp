@@ -20,7 +20,6 @@ public class GetImage621 {
             if (!input.contains("anthro")) quest.append("+-anthro");
             if (!input.contains("human")) quest.append("+-human");
         }
-        System.out.println(quest);
         return quest;
     }
 

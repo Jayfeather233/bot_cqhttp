@@ -33,7 +33,7 @@ public class Main {
     public synchronized static void setNextOutput(String input) {//收到传来的EVENT的JSON数据处理
         JSONObject J_input = JSONObject.parseObject(input);
         String post_type = J_input.getString("post_type");
-        String message_type = J_input.getString("message_type");
+        String message_type = J_input.containsKey("message_type") ? J_input.getString("message_type") : null;
         String uName = null;
         long user_id = 0, group_id = -1;
         if (J_input.containsKey("user_id")) {
