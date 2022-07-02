@@ -57,14 +57,15 @@ public class DeliverMain implements Playable {
         int t;
         if(message.contains(times[0][10])||message.contains(times[1][10])) t=11;
         else{
-            for(int i=0;i<10;i++){
+            t = 0;
+            for(int i=1;i<10;i++){
                 if(message.contains(times[0][i])||message.contains(times[1][i])){
                     t=i;
                     break;
                 }
             }
-            t = 0;
         }
+        if(t == 0) return;
 
         ArrayList<DeliverItemInfo> deliverItemArray = getDeliverItem(t);
 
