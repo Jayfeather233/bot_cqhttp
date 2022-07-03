@@ -15,8 +15,8 @@ public class ImageGeneratorMain implements Processable {
     @Override
     public void process(String message_type, String message, long group_id, long user_id) {
         String fileName = "";
-        for(int i=2;i<message.length();i++){
-            if(message.charAt(i)!=' '){
+        for (int i = 2; i < message.length(); i++) {
+            if (message.charAt(i) != ' ') {
                 message = message.substring(i);
                 break;
             }
@@ -32,9 +32,9 @@ public class ImageGeneratorMain implements Processable {
         } else if (message.contains("[CQ:image,")) {
             u = message.indexOf(",file=");
             u += 6;
-            for(int i=u;i<message.length();i++){
-                if(message.charAt(i)=='.'){
-                    fileName = message.substring(u,i);
+            for (int i = u; i < message.length(); i++) {
+                if (message.charAt(i) == '.') {
+                    fileName = message.substring(u, i);
                     break;
                 }
             }
@@ -51,7 +51,7 @@ public class ImageGeneratorMain implements Processable {
             uin = Long.parseLong(message);
         }
 
-        if(uin != 0){
+        if (uin != 0) {
             fileName = Long.toString(uin);
             fileName = fileName + ".jpg";
             ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", fileName);
@@ -62,65 +62,70 @@ public class ImageGeneratorMain implements Processable {
         }
 
         try {
-            File file = new File ("./resource/download/" + fileName);
+            File file = new File("./resource/download/" + fileName);
             BufferedImage buffImg = ImageIO.read(file);
             int w = buffImg.getWidth();
             int h = buffImg.getHeight();
             double k = 720.0 / w;
-            if(370 < h * k) k = 370.0 / h;
+            if (370 < h * k) k = 370.0 / h;
             int i1 = Double.valueOf(w * k).intValue();
             int i2 = Double.valueOf(h * k).intValue();
-            Image scaledInstance = buffImg.getScaledInstance(i1, i2,Image.SCALE_AREA_AVERAGING);
-            BufferedImage scaledImg = new BufferedImage(i1, i2,BufferedImage.TYPE_INT_RGB);
-            scaledImg.getGraphics().drawImage(scaledInstance,0,0,null);
+            Image scaledInstance = buffImg.getScaledInstance(i1, i2, Image.SCALE_AREA_AVERAGING);
+            BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_RGB);
+            scaledImg.getGraphics().drawImage(scaledInstance, 0, 0, null);
 
 
-            int dw = 840 + (int)((720 - w*k)/2);
-            int dh = 90 + (int)((370 - h*k)/2);
-            file = new File ("./resource/local/vaporeon_background.jpg");
+            int dw = 840 + (int) ((720 - w * k) / 2);
+            int dh = 90 + (int) ((370 - h * k) / 2);
+            file = new File("./resource/local/vaporeon_background.jpg");
             buffImg = ImageIO.read(file);
-            file = new File ("./resource/local/vaporeon_background_mask.jpg");
+            file = new File("./resource/local/vaporeon_background_mask.jpg");
 
             generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
 
-            ImageIO.write(buffImg,"jpg",new File("./resource/generate/" + fileName));
+            try {
+                ImageIO.write(buffImg, "jpg", new File("./resource/generate/" + fileName));
+            } catch (IOException e) {
+                new File("./resource/generate/").mkdirs();
+                ImageIO.write(buffImg, "jpg", new File("./resource/generate/" + fileName));
+            }
 
-            Main.setNextSender(message_type,user_id,group_id,"[CQ:image,file=file:///" + new File("").getCanonicalPath() +"/resource/generate/" + fileName + "]");
-        }catch (IOException e){
+            Main.setNextSender(message_type, user_id, group_id, "[CQ:image,file=file:///" + new File("").getCanonicalPath() + "/resource/generate/" + fileName + "]");
+        } catch (IOException e) {
             e.printStackTrace();
         }
         //840 90
         //1560 460
     }
 
-    private void generate(BufferedImage original, BufferedImage mask, BufferedImage scaled, int dx, int dy){
+    private void generate(BufferedImage original, BufferedImage mask, BufferedImage scaled, int dx, int dy) {
         Color[][] originalArr = getImagePixArray(original);
         Color[][] maskArr = getImagePixArray(mask);
         Color[][] scaledArr = getImagePixArray(scaled);
 
-        for(int i=0;i<scaledArr.length;i++){
-            for(int j=0;j<scaledArr[i].length;j++){
-                Color u=scaledArr[i][j];
-                Color v=maskArr[i+dx][j+dy];
-                Color w=originalArr[i+dx][j+dy];
-                Color s=new Color(
-                        (int)(u.getRed()*(v.getRed()/255.0)+w.getRed()*(1-v.getRed()/255.0)),
-                        (int)(u.getGreen()*(v.getGreen()/255.0)+w.getGreen()*(1-v.getGreen()/255.0)),
-                        (int)(u.getBlue()*(v.getBlue()/255.0)+w.getBlue()*(1-v.getBlue()/255.0)));
-                original.setRGB(i+dx,j+dy,s.getRGB());
+        for (int i = 0; i < scaledArr.length; i++) {
+            for (int j = 0; j < scaledArr[i].length; j++) {
+                Color u = scaledArr[i][j];
+                Color v = maskArr[i + dx][j + dy];
+                Color w = originalArr[i + dx][j + dy];
+                Color s = new Color(
+                        (int) (u.getRed() * (v.getRed() / 255.0) + w.getRed() * (1 - v.getRed() / 255.0)),
+                        (int) (u.getGreen() * (v.getGreen() / 255.0) + w.getGreen() * (1 - v.getGreen() / 255.0)),
+                        (int) (u.getBlue() * (v.getBlue() / 255.0) + w.getBlue() * (1 - v.getBlue() / 255.0)));
+                original.setRGB(i + dx, j + dy, s.getRGB());
             }
         }
     }
 
-    private Color[][] getImagePixArray(BufferedImage buffImg){
+    private Color[][] getImagePixArray(BufferedImage buffImg) {
         // 获取图片尺寸
-        int w = buffImg.getWidth ();
-        int h = buffImg.getHeight ();
+        int w = buffImg.getWidth();
+        int h = buffImg.getHeight();
 
         Color[][] imgArr = new Color[w][h];
-        for(int i = 0; i < w; i++){
-            for(int j = 0; j < h; j++){
-                imgArr[i][j] = new Color(buffImg.getRGB (i, j));
+        for (int i = 0; i < w; i++) {
+            for (int j = 0; j < h; j++) {
+                imgArr[i][j] = new Color(buffImg.getRGB(i, j));
             }
         }
 
