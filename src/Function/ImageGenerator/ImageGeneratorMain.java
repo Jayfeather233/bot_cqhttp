@@ -7,6 +7,7 @@ import Main.Processable;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 
@@ -53,11 +54,10 @@ public class ImageGeneratorMain implements Processable {
 
         if (uin != 0) {
             fileName = Long.toString(uin);
-            fileName = fileName + ".jpg";
+            fileName = fileName + ".png";
             ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", fileName);
         } else {
-            fileName = fileName + ".jpg";
-            System.out.println(fileName);
+            fileName = fileName + ".png";
             ImageDownloader.download(message, "resource/download", fileName);
         }
 
@@ -71,8 +71,14 @@ public class ImageGeneratorMain implements Processable {
             int i1 = Double.valueOf(w * k).intValue();
             int i2 = Double.valueOf(h * k).intValue();
             Image scaledInstance = buffImg.getScaledInstance(i1, i2, Image.SCALE_AREA_AVERAGING);
-            BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_RGB);
+            BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_ARGB);
             scaledImg.getGraphics().drawImage(scaledInstance, 0, 0, null);
+            try {
+                ImageIO.write(scaledImg, "png", new File("./resource/tmp/" + fileName));
+            } catch (IOException e) {
+                new File("./resource/tmp/").mkdirs();
+                ImageIO.write(scaledImg, "png", new File("./resource/tmp/" + fileName));
+            }
 
 
             int dw = 840 + (int) ((720 - w * k) / 2);
@@ -84,10 +90,10 @@ public class ImageGeneratorMain implements Processable {
             generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
 
             try {
-                ImageIO.write(buffImg, "jpg", new File("./resource/generate/" + fileName));
+                ImageIO.write(buffImg, "png", new File("./resource/generate/" + fileName));
             } catch (IOException e) {
                 new File("./resource/generate/").mkdirs();
-                ImageIO.write(buffImg, "jpg", new File("./resource/generate/" + fileName));
+                ImageIO.write(buffImg, "png", new File("./resource/generate/" + fileName));
             }
 
             Main.setNextSender(message_type, user_id, group_id, "[CQ:image,file=file:///" + new File("").getCanonicalPath() + "/resource/generate/" + fileName + "]");
@@ -108,10 +114,18 @@ public class ImageGeneratorMain implements Processable {
                 Color u = scaledArr[i][j];
                 Color v = maskArr[i + dx][j + dy];
                 Color w = originalArr[i + dx][j + dy];
+
                 Color s = new Color(
-                        (int) (u.getRed() * (v.getRed() / 255.0) + w.getRed() * (1 - v.getRed() / 255.0)),
-                        (int) (u.getGreen() * (v.getGreen() / 255.0) + w.getGreen() * (1 - v.getGreen() / 255.0)),
-                        (int) (u.getBlue() * (v.getBlue() / 255.0) + w.getBlue() * (1 - v.getBlue() / 255.0)));
+                        (int)(u.getRed() * (u.getAlpha() / 255.0) + w.getRed() * (1 - u.getAlpha() / 255.0)),
+                        (int)(u.getGreen() * (u.getAlpha() / 255.0) + w.getGreen() * (1 - u.getAlpha() / 255.0)),
+                        (int)(u.getBlue() * (u.getAlpha() / 255.0) + w.getBlue() * (1 - u.getAlpha() / 255.0))
+                );
+
+                s = new Color(
+                        (int)(s.getRed() * (v.getRed() / 255.0) + w.getRed() * (1 - v.getRed() / 255.0)),
+                        (int)(s.getGreen() * (v.getGreen() / 255.0) + w.getGreen() * (1 - v.getGreen() / 255.0)),
+                        (int)(s.getBlue() * (v.getBlue() / 255.0) + w.getBlue() * (1 - v.getBlue() / 255.0))
+                );
                 original.setRGB(i + dx, j + dy, s.getRGB());
             }
         }
@@ -125,7 +139,7 @@ public class ImageGeneratorMain implements Processable {
         Color[][] imgArr = new Color[w][h];
         for (int i = 0; i < w; i++) {
             for (int j = 0; j < h; j++) {
-                imgArr[i][j] = new Color(buffImg.getRGB(i, j));
+                imgArr[i][j] = new Color(buffImg.getRGB(i, j),true);
             }
         }
 
