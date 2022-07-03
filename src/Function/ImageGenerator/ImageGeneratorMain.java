@@ -14,6 +14,7 @@ public class ImageGeneratorMain implements Processable {
 
     @Override
     public void process(String message_type, String message, long group_id, long user_id) {
+        String fileName = "";
         for(int i=2;i<message.length();i++){
             if(message.charAt(i)!=' '){
                 message = message.substring(i);
@@ -29,6 +30,15 @@ public class ImageGeneratorMain implements Processable {
                 uin = uin * 10 + message.charAt(i) - '0';
             }
         } else if (message.contains("[CQ:image,")) {
+            u = message.indexOf(",file=");
+            u += 6;
+            for(int i=u;i<message.length();i++){
+                if(message.charAt(i)=='.'){
+                    fileName = message.substring(u,i);
+                    break;
+                }
+            }
+
             u = message.indexOf(",url=");
             message = message.substring(u + 5);
             for (int i = 0; i < message.length(); i++) {
@@ -42,13 +52,17 @@ public class ImageGeneratorMain implements Processable {
         }
 
         if(uin != 0){
-            ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", "foreground.jpg");
+            fileName = Long.toString(uin);
+            fileName = fileName + ".jpg";
+            ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", fileName);
         } else {
-            ImageDownloader.download(message, "resource/download", "foreground.jpg");
+            fileName = fileName + ".jpg";
+            System.out.println(fileName);
+            ImageDownloader.download(message, "resource/download", fileName);
         }
 
         try {
-            File file = new File ("./resource/download/foreground.jpg");
+            File file = new File ("./resource/download/" + fileName);
             BufferedImage buffImg = ImageIO.read(file);
             int w = buffImg.getWidth();
             int h = buffImg.getHeight();
@@ -69,9 +83,9 @@ public class ImageGeneratorMain implements Processable {
 
             generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
 
-            ImageIO.write(buffImg,"jpg",new File("./resource/generate/1.jpg"));
+            ImageIO.write(buffImg,"jpg",new File("./resource/generate/" + fileName));
 
-            Main.setNextSender(message_type,user_id,group_id,"[CQ:image,file=file:///" + new File("").getCanonicalPath() +"/resource/generate/1.jpg]");
+            Main.setNextSender(message_type,user_id,group_id,"[CQ:image,file=file:///" + new File("").getCanonicalPath() +"/resource/generate/" + fileName + "]");
         }catch (IOException e){
             e.printStackTrace();
         }

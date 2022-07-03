@@ -1,6 +1,5 @@
 package Main;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.Objects;
@@ -34,6 +33,7 @@ public class InputProcess implements Runnable {
                     do {
                         s1 = S.next();
                         s2 = S.next();
+                        s2 = s2 + S.nextLine();
                         if (s1.equals("end")) break;
                         J.put(s1, s2);
                     } while (true);
