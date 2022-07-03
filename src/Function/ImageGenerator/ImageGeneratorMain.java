@@ -73,13 +73,6 @@ public class ImageGeneratorMain implements Processable {
             Image scaledInstance = buffImg.getScaledInstance(i1, i2, Image.SCALE_AREA_AVERAGING);
             BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_ARGB);
             scaledImg.getGraphics().drawImage(scaledInstance, 0, 0, null);
-            try {
-                ImageIO.write(scaledImg, "png", new File("./resource/tmp/" + fileName));
-            } catch (IOException e) {
-                new File("./resource/tmp/").mkdirs();
-                ImageIO.write(scaledImg, "png", new File("./resource/tmp/" + fileName));
-            }
-
 
             int dw = 840 + (int) ((720 - w * k) / 2);
             int dh = 90 + (int) ((370 - h * k) / 2);
