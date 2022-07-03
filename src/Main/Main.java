@@ -1,9 +1,9 @@
 package Main;
 
-import Game.AutoForwardGenerator.AutoForwardGeneratorMain;
+import Function.AutoForwardGenerator.AutoForwardGeneratorMain;
+import Function.ImageGenerator.ImageGeneratorMain;
 import Game.Deliver.DeliverMain;
 import Game.Guess.GuessGameMain;
-import Game.Playable;
 import Game.UNO.UNOMain;
 import HTTPConnect.GetImage621;
 import HTTPConnect.HttpURLConnectionUtil;
@@ -19,7 +19,7 @@ public class Main {
     public static int receivePort;
     private static final Set<Long> friendSet = new HashSet<>();
     private static final Map<Long, String> userName = new HashMap<>();
-    private static final ArrayList<Playable> games = new ArrayList<>();
+    private static final ArrayList<Processable> features = new ArrayList<>();
 
     public static Set<Long> getFriendSet() {
         return friendSet;
@@ -108,7 +108,7 @@ public class Main {
                 }
             }
         } else {
-            for (Playable game : games) {
+            for (Processable game : features) {
                 if (game.check(message_type, message, group_id, user_id)) {
                     game.process(message_type, message, group_id, user_id);
                 }
@@ -140,10 +140,11 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        games.add(new UNOMain());
-        games.add(new AutoForwardGeneratorMain());
-        games.add(new DeliverMain());
-        games.add(new GuessGameMain());
+        features.add(new UNOMain());
+        features.add(new AutoForwardGeneratorMain());
+        features.add(new DeliverMain());
+        features.add(new GuessGameMain());
+        features.add(new ImageGeneratorMain());
 
         File f = new File("./port.txt");
         if(!f.exists()){

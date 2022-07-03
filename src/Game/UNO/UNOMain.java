@@ -1,6 +1,6 @@
 package Game.UNO;
 
-import Game.Playable;
+import Main.Processable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Set;
 
 import static Main.Main.*;
 
-public class UNOMain implements Playable {
+public class UNOMain implements Processable {
     private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
     private static final Map<Long, Long> unoIDMap = new HashMap<>();
 

@@ -1,6 +1,6 @@
-package Game.AutoForwardGenerator;
+package Function.AutoForwardGenerator;
 
-import Game.Playable;
+import Main.Processable;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import static Main.Main.setNextSender;
 
-public class AutoForwardGeneratorMain implements Playable {
+public class AutoForwardGeneratorMain implements Processable {
     @Override
     public void process(String message_type, String message, long group_id, long user_id) {
         message = message.substring(2);

@@ -1,6 +1,6 @@
 package Game.Deliver;
 
-import Game.Playable;
+import Main.Processable;
 
 import java.io.*;
 import java.util.*;
@@ -13,7 +13,7 @@ class DeliverItemInfo {
     int color; //0:green 1:yellow 2:purple
 }
 
-public class DeliverMain implements Playable {
+public class DeliverMain implements Processable {
     private final DeliverItemInfo[] diiArray = new DeliverItemInfo[100];
     private final Random R = new Random();
     private int totalPoss = 0;

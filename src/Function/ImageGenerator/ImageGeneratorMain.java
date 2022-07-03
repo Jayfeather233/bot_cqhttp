@@ -1,0 +1,120 @@
+package Function.ImageGenerator;
+
+import HTTPConnect.ImageDownloader;
+import Main.Main;
+import Main.Processable;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+public class ImageGeneratorMain implements Processable {
+
+    @Override
+    public void process(String message_type, String message, long group_id, long user_id) {
+        for(int i=2;i<message.length();i++){
+            if(message.charAt(i)!=' '){
+                message = message.substring(i);
+                break;
+            }
+        }
+        int u;
+        long uin = 0;
+        if ((u = message.indexOf("[CQ:at,qq=")) != -1) {
+            message = message.substring(u + 10);
+            for (int i = 0; i < message.length(); i++) {
+                if (message.charAt(i) == ']') break;
+                uin = uin * 10 + message.charAt(i) - '0';
+            }
+        } else if (message.contains("[CQ:image,")) {
+            u = message.indexOf(",url=");
+            message = message.substring(u + 5);
+            for (int i = 0; i < message.length(); i++) {
+                if (message.charAt(i) == ']') {
+                    message = message.substring(0, i);
+                    break;
+                }
+            }
+        } else {
+            uin = Long.parseLong(message);
+        }
+
+        if(uin != 0){
+            ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", "foreground.jpg");
+        } else {
+            ImageDownloader.download(message, "resource/download", "foreground.jpg");
+        }
+
+        try {
+            File file = new File ("./resource/download/foreground.jpg");
+            BufferedImage buffImg = ImageIO.read(file);
+            int w = buffImg.getWidth();
+            int h = buffImg.getHeight();
+            double k = 720.0 / w;
+            if(370 < h * k) k = 370.0 / h;
+            int i1 = Double.valueOf(w * k).intValue();
+            int i2 = Double.valueOf(h * k).intValue();
+            Image scaledInstance = buffImg.getScaledInstance(i1, i2,Image.SCALE_AREA_AVERAGING);
+            BufferedImage scaledImg = new BufferedImage(i1, i2,BufferedImage.TYPE_INT_RGB);
+            scaledImg.getGraphics().drawImage(scaledInstance,0,0,null);
+
+
+            int dw = 840 + (int)((720 - w*k)/2);
+            int dh = 90 + (int)((370 - h*k)/2);
+            file = new File ("./resource/local/vaporeon_background.jpg");
+            buffImg = ImageIO.read(file);
+            file = new File ("./resource/local/vaporeon_background_mask.jpg");
+
+            generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
+
+            ImageIO.write(buffImg,"jpg",new File("./resource/generate/1.jpg"));
+
+            Main.setNextSender(message_type,user_id,group_id,"[CQ:image,file=file:///" + new File("").getCanonicalPath() +"/resource/generate/1.jpg]");
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        //840 90
+        //1560 460
+    }
+
+    private void generate(BufferedImage original, BufferedImage mask, BufferedImage scaled, int dx, int dy){
+        Color[][] originalArr = getImagePixArray(original);
+        Color[][] maskArr = getImagePixArray(mask);
+        Color[][] scaledArr = getImagePixArray(scaled);
+
+        for(int i=0;i<scaledArr.length;i++){
+            for(int j=0;j<scaledArr[i].length;j++){
+                Color u=scaledArr[i][j];
+                Color v=maskArr[i+dx][j+dy];
+                Color w=originalArr[i+dx][j+dy];
+                Color s=new Color(
+                        (int)(u.getRed()*(v.getRed()/255.0)+w.getRed()*(1-v.getRed()/255.0)),
+                        (int)(u.getGreen()*(v.getGreen()/255.0)+w.getGreen()*(1-v.getGreen()/255.0)),
+                        (int)(u.getBlue()*(v.getBlue()/255.0)+w.getBlue()*(1-v.getBlue()/255.0)));
+                original.setRGB(i+dx,j+dy,s.getRGB());
+            }
+        }
+    }
+
+    private Color[][] getImagePixArray(BufferedImage buffImg){
+        // 获取图片尺寸
+        int w = buffImg.getWidth ();
+        int h = buffImg.getHeight ();
+
+        Color[][] imgArr = new Color[w][h];
+        for(int i = 0; i < w; i++){
+            for(int j = 0; j < h; j++){
+                imgArr[i][j] = new Color(buffImg.getRGB (i, j));
+            }
+        }
+
+        return imgArr;
+    }
+
+    @Override
+    public boolean check(String message_type, String message, long group_id, long user_id) {
+        return message.startsWith("想要");
+    }
+}

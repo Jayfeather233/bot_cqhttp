@@ -1,6 +1,6 @@
 package Game.Guess;
 
-import Game.Playable;
+import Main.Processable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ class GuessGameInfo {
         this.stdAnswer = stdAnswer;
     }
 }
-public class GuessGameMain implements Playable {
+public class GuessGameMain implements Processable {
 
     Map<Long, GuessGameInfo> playerMap = new HashMap<>();
 
