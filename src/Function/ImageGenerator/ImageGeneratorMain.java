@@ -55,46 +55,54 @@ public class ImageGeneratorMain implements Processable {
         if (uin != 0) {
             fileName = Long.toString(uin);
             fileName = fileName + ".png";
-            ImageDownloader.download("http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160", "resource/download", fileName);
+            message = "http://q1.qlogo.cn/g?b=qq&nk=" + uin + "&s=160";
         } else {
             fileName = fileName + ".png";
-            ImageDownloader.download(message, "resource/download", fileName);
         }
+        File file = new File("./resource/download/" + fileName);
+        if (!file.exists())
+            ImageDownloader.download(message, "resource/download", fileName);
 
-        try {
-            File file = new File("./resource/download/" + fileName);
-            BufferedImage buffImg = ImageIO.read(file);
-            int w = buffImg.getWidth();
-            int h = buffImg.getHeight();
-            double k = 720.0 / w;
-            if (370 < h * k) k = 370.0 / h;
-            int i1 = Double.valueOf(w * k).intValue();
-            int i2 = Double.valueOf(h * k).intValue();
-            Image scaledInstance = buffImg.getScaledInstance(i1, i2, Image.SCALE_AREA_AVERAGING);
-            BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_ARGB);
-            scaledImg.getGraphics().drawImage(scaledInstance, 0, 0, null);
-
-            int dw = 840 + (int) ((720 - w * k) / 2);
-            int dh = 90 + (int) ((370 - h * k) / 2);
-            file = new File("./resource/local/vaporeon_background.jpg");
-            buffImg = ImageIO.read(file);
-            file = new File("./resource/local/vaporeon_background_mask.jpg");
-
-            generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
-
+        File outFile = new File("./resource/generate/" + fileName);
+        if (!outFile.exists()) {
             try {
-                ImageIO.write(buffImg, "png", new File("./resource/generate/" + fileName));
-            } catch (IOException e) {
-                new File("./resource/generate/").mkdirs();
-                ImageIO.write(buffImg, "png", new File("./resource/generate/" + fileName));
-            }
+                BufferedImage buffImg = ImageIO.read(file);
+                int w = buffImg.getWidth();
+                int h = buffImg.getHeight();
+                double k = 720.0 / w;
+                if (370 < h * k) k = 370.0 / h;
+                int i1 = Double.valueOf(w * k).intValue();
+                int i2 = Double.valueOf(h * k).intValue();
+                Image scaledInstance = buffImg.getScaledInstance(i1, i2, Image.SCALE_AREA_AVERAGING);
+                BufferedImage scaledImg = new BufferedImage(i1, i2, BufferedImage.TYPE_INT_ARGB);
+                scaledImg.getGraphics().drawImage(scaledInstance, 0, 0, null);
 
+                int dw = 840 + (int) ((720 - w * k) / 2);
+                int dh = 90 + (int) ((370 - h * k) / 2);
+                file = new File("./resource/local/vaporeon_background.jpg");
+                buffImg = ImageIO.read(file);
+                file = new File("./resource/local/vaporeon_background_mask.jpg");
+
+                generate(buffImg, ImageIO.read(file), scaledImg, dw, dh);
+
+                try {
+                    ImageIO.write(buffImg, "png", outFile);
+                } catch (IOException e) {
+                    new File("./resource/generate/").mkdirs();
+                    ImageIO.write(buffImg, "png", outFile);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //840 90
+            //1560 460
+        }
+        try {
             Main.setNextSender(message_type, user_id, group_id, "[CQ:image,file=file:///" + new File("").getCanonicalPath() + "/resource/generate/" + fileName + "]");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //840 90
-        //1560 460
+
     }
 
     private void generate(BufferedImage original, BufferedImage mask, BufferedImage scaled, int dx, int dy) {
