@@ -1,10 +1,10 @@
-package Main;
+package main;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static Main.Main.receivePort;
+import static main.Main.receivePort;
 
 class Proc extends Thread {
     private final Socket socket;

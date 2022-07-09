@@ -1,13 +1,13 @@
-package Function.AutoForwardGenerator;
+package function.autoForwardGenerator;
 
-import Main.Processable;
+import main.Processable;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.Objects;
 import java.util.Scanner;
 
-import static Main.Main.setNextSender;
+import static main.Main.setNextSender;
 
 public class AutoForwardGeneratorMain implements Processable {
     @Override

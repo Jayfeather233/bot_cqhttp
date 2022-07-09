@@ -1,7 +1,7 @@
-package Main;
+package main;
 
 public class NextOutputThread implements Runnable {
-    String s;
+    final String s;
 
     public NextOutputThread(String input) {
         s = input;

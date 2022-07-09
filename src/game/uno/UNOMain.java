@@ -1,12 +1,12 @@
-package Game.UNO;
+package game.uno;
 
-import Main.Processable;
+import main.Processable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static Main.Main.*;
+import static main.Main.*;
 
 public class UNOMain implements Processable {
     private static final Map<Long, UNOGame> unoGameMap = new HashMap<>();
@@ -34,6 +34,7 @@ public class UNOMain implements Processable {
         if(message.startsWith("uno.")) message = message.substring(3);
         if (message.equals(".help")) {
             setNextSender(message_type, user_id, group_id, "uno.new 创建一个群UNO游戏\nuno.join 加入当前群游戏\nuno.leave 离开\nuno.start 开始\nuno.order 出牌顺序\nuno.resend 重新发送消息\nuno.help 帮助");
+            return;
         }
         Set<Long> friendSet = getFriendSet();
         if (message_type.equals("group")) {

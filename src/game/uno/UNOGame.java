@@ -1,6 +1,6 @@
-package Game.UNO;
+package game.uno;
 
-import Main.Main;
+import main.Main;
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.List;
 public class UNOGame implements Runnable {
     private static final int CARDS_LENGTH = 108;
     public final long gameID;
-    String[] color;
-    String[] name;
+    final String[] color;
+    final String[] name;
     boolean hasNextInput = false;
     boolean isEnd = false;
     boolean colorChoosing = false;
@@ -238,8 +238,6 @@ public class UNOGame implements Runnable {
         nextID = ID;
         nextInput = input;
         hasNextInput = true;
-        System.out.print(nextID);
-        System.out.println(nextInput);
     }
 
     @Override
@@ -329,18 +327,15 @@ public class UNOGame implements Runnable {
                 continue;
             } else if (bufferInput.equals(".order")) {
                 sendGroupMsg(getOrder());
-                needOutput = false;
             } else if (bufferInput.equals(".leave")) {
                 if (leave(bufferID) == -1) sendGroupMsg("[CQ:at,qq=" + bufferID + "] 您不在游戏中");
                 else sendGroupMsg("[CQ:at,qq=" + bufferID + "] 退出成功");
-                needOutput = false;
             } else if (bufferInput.equals(".join")) {
                 if (playerID.contains(bufferID)) {
                     sendGroupMsg("[CQ:at,qq=" + bufferID + "] 您已在游戏中");
                 } else {
                     join(bufferID);
                 }
-                needOutput = false;
             } else if (bufferInput.indexOf(".play") == 0) {
                 if (playerID.get(nowPlayer) != bufferID) {
                     sendPrivateMsg(bufferID, "不是你的回合");
@@ -364,9 +359,9 @@ public class UNOGame implements Runnable {
                         }
                         nowPlayer = nextPlayer();
                         colorChoosing = false;
+                        continue;
                     } else {
                         sendPrivateMsg(bufferID, "颜色ID错误");
-                        needOutput = false;
                     }
                 } else if (playID == -1) {
                     if (!isDrawn) {
@@ -386,30 +381,29 @@ public class UNOGame implements Runnable {
                         nowPlayer = nextPlayer();
                         isDrawn = false;
                     }
+                    continue;
                 } else {
                     try {
                         playID = playerCards.get(playerID.indexOf(bufferID)).get(playID);
                         int u = play(bufferID, playID);
                         if (u == 4) {
                             sendPrivateMsg(bufferID, "不能打出这张牌");
-                            needOutput = false;
                         } else if (u == 5) {
                             sendPrivateMsg(bufferID, "请选择颜色：1.红 2.黄 3.蓝 4.绿");
                             colorChoosing = true;
-                            needOutput = false;
                         } else if (u == 0) {
                             sendPrivateMsg(bufferID, "打出成功");
                         } else {
                             sendPrivateMsg(bufferID, "Unknown Error.");
-                            needOutput = false;
                         }
                         isDrawn = false;
                     } catch (IndexOutOfBoundsException e) {
                         sendPrivateMsg(bufferID, "ID过大");
-                        needOutput = false;
                     }
+                    continue;
                 }
             }
+            needOutput = false;
         }
     }
 }

@@ -1,4 +1,4 @@
-package HTTPConnect;
+package httpconnect;
 
 import java.io.*;
 import java.net.URL;

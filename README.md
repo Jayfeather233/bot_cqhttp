@@ -11,12 +11,12 @@
 
 ### 关于源文件
 
-Main/Main.java 为入口。
+main/main.java 为入口。
 
-- src/Main：包含Main.java和其他文件，用于给go-cqhttp分发消息。
-- src/Game：包含所有游戏的java文件，用于处理游戏。
-- src/Function：包含所有用于处理功能的java文件。
-- src/HTTPConnect：用于通过HTTP与go-cqhttp连接的文件以及用于下载图片的文件。
+- src/main：包含Main.java和其他文件，用于给go-cqhttp分发消息。
+- src/game：包含所有游戏的java文件，用于处理游戏。
+- src/function：包含所有用于处理功能的java文件。
+- src/httpconnect：用于通过HTTP与go-cqhttp连接的文件以及用于下载图片的文件。
 - lib：支持JSON的文件。(Alibaba.fastjson)
 
 ### 如何运行这个机器人
@@ -38,12 +38,12 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 
 ### About the source files
 
-The Main/Main.java is the starting point.
+The main/main.java is the starting point.
 
-- src/Main: contains Main.java and other files to distribute message with go-cqhttp.
-- src/Game: contains all games' java files to process the games.
-- src/Function: contains all java files to process the features.
-- src/HTTPConnect: files used to connect with go-cqhttp through HTTP and files for download images.
+- src/main: contains main.java and other files to distribute message with go-cqhttp.
+- src/game: contains all games' java files to process the games.
+- src/function: contains all java files to process the features.
+- src/httpconnect: files used to connect with go-cqhttp through HTTP and files for download images.
 - lib: support files for JSON. (Alibaba.fastjson)
 
 ### How to run the bot

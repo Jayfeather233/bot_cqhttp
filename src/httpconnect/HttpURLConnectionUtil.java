@@ -1,4 +1,4 @@
-package HTTPConnect;
+package httpconnect;
 
 import com.alibaba.fastjson.JSONObject;
 

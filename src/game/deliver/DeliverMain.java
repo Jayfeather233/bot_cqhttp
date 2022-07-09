@@ -1,11 +1,11 @@
-package Game.Deliver;
+package game.deliver;
 
-import Main.Processable;
+import main.Processable;
 
 import java.io.*;
 import java.util.*;
 
-import static Main.Main.setNextSender;
+import static main.Main.setNextSender;
 
 class DeliverItemInfo {
     String name;

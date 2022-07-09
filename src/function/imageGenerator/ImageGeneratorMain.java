@@ -1,13 +1,12 @@
-package Function.ImageGenerator;
+package function.imageGenerator;
 
-import HTTPConnect.ImageDownloader;
-import Main.Main;
-import Main.Processable;
+import httpconnect.ImageDownloader;
+import main.Main;
+import main.Processable;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
 import java.io.File;
 import java.io.IOException;
 

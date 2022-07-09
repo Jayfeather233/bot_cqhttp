@@ -1,11 +1,11 @@
-package Main;
+package main;
 
 import com.alibaba.fastjson.JSONObject;
 
 import java.util.Objects;
 import java.util.Scanner;
 
-import static Main.Main.setNextSender;
+import static main.Main.setNextSender;
 
 public class InputProcess implements Runnable {
     public void run(){

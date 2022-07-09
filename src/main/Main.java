@@ -1,12 +1,12 @@
-package Main;
+package main;
 
-import Function.AutoForwardGenerator.AutoForwardGeneratorMain;
-import Function.GetImage621.GetImage621Main;
-import Function.ImageGenerator.ImageGeneratorMain;
-import Game.Deliver.DeliverMain;
-import Game.Guess.GuessGameMain;
-import Game.UNO.UNOMain;
-import HTTPConnect.HttpURLConnectionUtil;
+import function.autoForwardGenerator.AutoForwardGeneratorMain;
+import function.getImage621.GetImage621Main;
+import function.imageGenerator.ImageGeneratorMain;
+import game.deliver.DeliverMain;
+import game.guess.GuessGameMain;
+import game.uno.UNOMain;
+import httpconnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -63,11 +63,11 @@ public class Main {
             }
         }
         if (post_type.equals("notice")) {
-            if (J_input.containsKey("sub_type") && J_input.getString("sub_type").equals("poke")) {
+            if (group_id !=-1 && J_input.containsKey("sub_type") && J_input.getString("sub_type").equals("poke")) {
                 if (J_input.getLong("target_id") == 1573079756 && user_id != 1783241911 && user_id != 1318920100) {
                     System.out.println("poke");
-                    setNextSender(message_type, user_id, group_id, "[CQ:poke,qq=" + user_id + "]");
-                    if (new Random().nextInt(3) == 1) setNextSender(message_type, user_id, group_id, "别戳我TAT");
+                    setNextSender("group", user_id, group_id, "[CQ:poke,qq=" + user_id + "]");
+                    if (new Random().nextInt(3) == 1) setNextSender("group", user_id, group_id, "别戳我TAT");
                 }
             }
         }
