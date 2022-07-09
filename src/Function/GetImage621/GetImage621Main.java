@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class GetImage621Main implements Processable {
 
     private JSONArray JGroup, JPrivate, JAdmin;
+    private long lastMsg = 0;
 
     private int retry = 0;
 
@@ -38,7 +39,7 @@ public class GetImage621Main implements Processable {
 
     /*
     level:
-        0: safe feral pokemon score:>200
+        0: safe feral pokemon
         1: safe feral
         2: safe
         3: question
@@ -49,7 +50,7 @@ public class GetImage621Main implements Processable {
 
         StringBuilder sb = new StringBuilder(input);
 
-        if (level <= 0) sb.append(" score:>200");
+        if (level <= 0) sb.append(" score:>0");
         if (level <= 2) sb.append(" rating:s");
         else if (level <= 3) {
             sb.append(" -rating:e");
@@ -73,6 +74,8 @@ public class GetImage621Main implements Processable {
         if (quest.length() == 0) quest.append("eeveelution");
         if (!input.contains("id:")) {
             if (!input.contains("favcount") && !input.contains("score") && level <= 0)
+                quest.append("+favcount:>0").append("+score:>0");
+            if (!input.contains("favcount") && !input.contains("score"))
                 quest.append("+favcount:>400").append("+score:>200");
             if (!input.contains("order")) quest.append("+order:random");
             if (!input.contains("gore") && level <= 4) quest.append("+-gore");
@@ -85,6 +88,12 @@ public class GetImage621Main implements Processable {
     public void process(String message_type, String message, long group_id, long user_id) {
 
         message = message.toLowerCase();
+        if (message.equals("621.recall") && lastMsg != 0){
+            JSONObject J = new JSONObject();
+            J.put("message_id", lastMsg);
+            Main.Main.setNextSender("delete_msg",J);
+            return;
+        }
         if (message.startsWith("621.set")) {
             adminProcessSet(message_type, message.substring(8), group_id, user_id);
             return;
@@ -97,7 +106,7 @@ public class GetImage621Main implements Processable {
             Main.Main.setNextSender(message_type, user_id, group_id,
 """
 level:
-    0: safe feral pokemon score:>200
+    0: safe feral pokemon
     1: safe feral
     2: safe
     3: question
@@ -157,6 +166,7 @@ level:
                 Main.Main.setNextSender(message_type, user_id, group_id, "Get .webm.\nid: " + id);
                 return;
             }
+            System.out.println("retry");
             process(message_type, "621" + message, user_id, group_id);
             return;
         }
@@ -168,7 +178,8 @@ level:
         quest.append("id:").append(id);
 
         retry = 0;
-        Main.Main.setNextSender(message_type, user_id, group_id, String.valueOf(quest));
+        JSONObject J = JSONObject.parseObject(String.valueOf(Main.Main.setNextSender(message_type, user_id, group_id, String.valueOf(quest))));
+        lastMsg = J.getJSONObject("data").getLong("message_id");
     }
 
     private void adminProcessSet(String message_type, String message, long group_id, long user_id) {

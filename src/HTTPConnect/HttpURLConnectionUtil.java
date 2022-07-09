@@ -2,6 +2,7 @@ package HTTPConnect;
 
 import com.alibaba.fastjson.JSONObject;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -57,7 +58,10 @@ public class HttpURLConnectionUtil {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (SSLHandshakeException e) {
+            System.out.println(e.getMessage());
+            return doGet(httpUrl);
+        }  catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (br != null) {
