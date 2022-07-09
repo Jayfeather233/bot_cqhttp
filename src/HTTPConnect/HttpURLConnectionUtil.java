@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * @author riemann
@@ -21,6 +22,13 @@ public class HttpURLConnectionUtil {
     public static String doGet(String httpUrl) {
         //链接
 
+        List<Proxy> l;
+        try{
+            l = ProxySelector.getDefault().select(new URI("https://e621.net"));
+        } catch (URISyntaxException e){
+            e.printStackTrace();
+            return null;
+        }
         HttpURLConnection connection = null;
         InputStream is = null;
         BufferedReader br = null;
@@ -29,7 +37,7 @@ public class HttpURLConnectionUtil {
             //创建连接
             URL url = new URL(httpUrl);
 
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection(l.get(0));
 
             //设置请求方式
             connection.setRequestMethod("GET");
@@ -85,8 +93,7 @@ public class HttpURLConnectionUtil {
         try {
             //创建连接
             URL url = new URL(ADD_URL);
-            HttpURLConnection connection = (HttpURLConnection) url
-                    .openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestMethod("POST");

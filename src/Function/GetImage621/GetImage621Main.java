@@ -177,7 +177,7 @@ level:
         if (level <= 0) return;
 
         String[] sp = message.split(" ");
-        if (sp.length != 3 && sp.length != 2) {
+        if (sp.length <= 1) {
             Main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
             //Main.Main.setNextSender(message_type, user_id, group_id, Arrays.toString(sp));
             return;
@@ -186,7 +186,7 @@ level:
             long id;
             int setLevel;
             if (sp[0].equals("this")) {
-                if (sp.length == 3) {
+                if (sp.length != 2) {
                     Main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
                     return;
                 }
@@ -198,6 +198,10 @@ level:
                 }
                 setLevel = Integer.parseInt(sp[1]);
             } else {
+                if(sp.length != 3) {
+                    Main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
+                    return;
+                }
                 id = Long.parseLong(sp[1]);
                 setLevel = Integer.parseInt(sp[2]);
             }

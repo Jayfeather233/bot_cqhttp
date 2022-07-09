@@ -131,6 +131,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
+        System.setProperty("java.net.useSystemProxies", "true");
         features.add(new UNOMain());
         features.add(new AutoForwardGeneratorMain());
         features.add(new DeliverMain());
