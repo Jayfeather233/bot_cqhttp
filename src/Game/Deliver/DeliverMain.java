@@ -32,7 +32,7 @@ public class DeliverMain implements Processable {
                 totalPoss += diiArray[i].possibility;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 

@@ -1,11 +1,11 @@
 package Main;
 
 import Function.AutoForwardGenerator.AutoForwardGeneratorMain;
+import Function.GetImage621.GetImage621Main;
 import Function.ImageGenerator.ImageGeneratorMain;
 import Game.Deliver.DeliverMain;
 import Game.Guess.GuessGameMain;
 import Game.UNO.UNOMain;
-import HTTPConnect.GetImage621;
 import HTTPConnect.HttpURLConnectionUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -89,15 +89,6 @@ public class Main {
                 J.put("message", "啊对对对");
                 setNextSender("send_group_msg", J);
             }
-        } else if (message.indexOf("621") == 0) {
-            if (message_type.equals("group")) {
-                if (group_id == 1011383394 || group_id == 118627232 || group_id == 614981678) {
-                    JSONObject J = new JSONObject();
-                    J.put("group_id", group_id);
-                    J.put("message", GetImage621.GetImage(message.substring(3)));
-                    setNextSender("send_group_msg", J);
-                }
-            }
         } else if (message.indexOf("mget") == 0) {
             if (message_type.equals("group")) {
                 if (group_id == 1011383394) {
@@ -145,6 +136,7 @@ public class Main {
         features.add(new DeliverMain());
         features.add(new GuessGameMain());
         features.add(new ImageGeneratorMain());
+        features.add(new GetImage621Main());
 
         File f = new File("./port.txt");
         if(!f.exists()){
