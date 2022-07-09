@@ -22,7 +22,7 @@ Main/Main.java 为入口。
 ### 如何运行这个机器人
 
 1. 配置并启动go-cqhttp。打开 "反向HTTP POST地址"，并设置你自己的接收端口。
-2. 进入发布页面，下载并运行 bot_cqhttp.jar。它将需要send_port和receive_port在第一时间连接到go-cqhttp。
+2. 进入发布页面，下载并运行 bot_cqhttp.jar (未更新)。它将需要send_port和receive_port在第一时间连接到go-cqhttp。
 3. 在这之后，希望它能跑起来。
 
 ## English version
@@ -49,5 +49,5 @@ The Main/Main.java is the starting point.
 ### How to run the bot
 
 1. Configure and start go-cqhttp. Do open the "反向HTTP POST地址", and set your own reception port.
-2. Go to Release Page, download and run the bot_cqhttp.jar. It will require send_port and receive_port at the first time to connect to go-cqhttp
+2. Go to Release Page, download and run the bot_cqhttp.jar (not up to date). It will require send_port and receive_port at the first time to connect to go-cqhttp
 3. After this it is expected to run.
