@@ -75,7 +75,7 @@ public class GetImage621Main implements Processable {
         if (!input.contains("id:")) {
             if (!input.contains("favcount") && !input.contains("score") && level <= 0)
                 quest.append("+favcount:>0").append("+score:>0");
-            if (!input.contains("favcount") && !input.contains("score"))
+            else if (!input.contains("favcount") && !input.contains("score"))
                 quest.append("+favcount:>400").append("+score:>200");
             if (!input.contains("order")) quest.append("+order:random");
             if (!input.contains("gore") && level <= 4) quest.append("+-gore");
