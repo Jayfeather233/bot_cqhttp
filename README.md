@@ -9,6 +9,7 @@
 - 模拟PokémonCaféReMix的外送。
 - 在群或私聊中生成一个假的转发信息。
 - 生成一张 水布想要 的图片
+- 恶臭数字论证器，来源：[itorr](https://github.com/itorr/homo);
 
 ### 关于源文件
 
@@ -47,6 +48,7 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - Simulate the delivery system of PokémonCaféReMix.
 - Generate a fake forward message in a group or private.
 - Generate a Vaporeon image.
+- Homo number generator. From [itorr](https://github.com/itorr/homo).
 
 ### About the source files
 
