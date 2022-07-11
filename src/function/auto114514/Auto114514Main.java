@@ -53,7 +53,8 @@ public class Auto114514Main implements Processable {
         info x = getMinNum(num);
         assert x != null;
         if(x.num == num) return new StringBuilder(x.ans);
-        return re.append("(").append(x.ans).append(")*(").append(getAns(num/x.num)).append(")+(").append(getAns(num%x.num)).append(")");
+        if(num/x.num == 1) return re.append(x.ans).append("+(").append(getAns(num%x.num)).append(")");
+        else return re.append("(").append(x.ans).append(")*(").append(getAns(num/x.num)).append(")+(").append(getAns(num%x.num)).append(")");
     }
 
     private info getMinNum(long u){
