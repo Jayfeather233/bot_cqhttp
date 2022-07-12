@@ -37,6 +37,10 @@ public class Auto114514Main implements Processable {
     public void process(String message_type, String message, long group_id, long user_id) {
         try {
             long num = Long.parseLong(message.substring(4).trim());
+            if(num == 114514){
+                main.Main.setNextSender(message_type,user_id,group_id,"这么臭的数字有必要论证吗（恼）");
+                return;
+            }
             StringBuilder ans = new StringBuilder("" + num + "=");
             ans.append(getAns(num));
             main.Main.setNextSender(message_type,user_id,group_id,ans.toString());
