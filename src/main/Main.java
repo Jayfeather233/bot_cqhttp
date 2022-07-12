@@ -3,6 +3,7 @@ package main;
 import function.auto114514.Auto114514Main;
 import function.autoForwardGenerator.AutoForwardGeneratorMain;
 import function.getImage621.GetImage621Main;
+import function.getimage2d.GetImage2DMain;
 import function.imageGenerator.ImageGeneratorMain;
 import game.deliver.DeliverMain;
 import game.guess.GuessGameMain;
@@ -140,6 +141,7 @@ public class Main {
         features.add(new ImageGeneratorMain());
         features.add(new GetImage621Main());
         features.add(new Auto114514Main());
+        features.add(new GetImage2DMain());
 
         File f = new File("./port.txt");
         if(!f.exists()){
