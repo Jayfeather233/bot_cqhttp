@@ -10,7 +10,8 @@
 - 在群或私聊中生成一个假的转发信息。
 - 生成一张 水布想要 的图片
 - 恶臭数字论证器，来源：[itorr](https://github.com/itorr/homo)
-- 来点二次元，来源：[dmoe](www.dmoe.cc)
+- 来点二次元，来源：[dmoe](https://www.dmoe.cc)
+- 关键词回复
 
 ### 关于源文件
 
@@ -25,7 +26,7 @@ main/Main.java 为入口。
 ### 如何运行这个机器人
 
 1. 配置并启动go-cqhttp。打开 "反向HTTP POST地址"，并设置你自己的接收端口。
-2. 下载所有文件并运行main.Main（推荐），或者进入发布页面，下载并运行 bot_cqhttp.jar（未更新）。它将需要send_port和receive_port在第一时间连接到go-cqhttp。
+2. 下载所有文件并运行main.Main（推荐），或者进入发布页面，下载并运行 bot_cqhttp.jar（未更新）。第一次启动需要send_port和receive_port来连接到go-cqhttp。
 3. 在这之后，希望它能跑起来。
 
 ### 如何添加新功能
@@ -50,7 +51,8 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - Generate a fake forward message in a group or private.
 - Generate a Vaporeon image.
 - Homo number generator. From [itorr](https://github.com/itorr/homo).
-- Get 2D people image. From [dmoe](www.dmoe.cc).
+- Get Japanese anime image. From [dmoe](www.dmoe.cc).
+- Keywords reply.
 
 ### About the source files
 
