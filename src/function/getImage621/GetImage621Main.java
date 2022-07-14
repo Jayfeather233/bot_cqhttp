@@ -1,6 +1,7 @@
 package function.getImage621;
 
 import httpconnect.HttpURLConnectionUtil;
+import main.Main;
 import main.Processable;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -91,7 +92,7 @@ public class GetImage621Main implements Processable {
         if (message.equals("621.recall") && lastMsg != 0){
             JSONObject J = new JSONObject();
             J.put("message_id", lastMsg);
-            main.Main.setNextSender("delete_msg",J);
+            Main.setNextSender("delete_msg",J);
             return;
         }
         if (message.startsWith("621.set")) {
@@ -103,7 +104,7 @@ public class GetImage621Main implements Processable {
             return;
         }
         if (message.equals("621.level")) {
-            main.Main.setNextSender(message_type, user_id, group_id,
+            Main.setNextSender(message_type, user_id, group_id,
 """
 level:
     0: safe feral pokemon
@@ -131,7 +132,7 @@ level:
 
         message = message.substring(3);
         if (message.equals(".default")) {
-            main.Main.setNextSender(message_type, user_id, group_id, "如未指定tag，默认加上eeveelution\n如未指定favcount或score，默认加上favcount:>400 score:>200\n如未指定以下tags，默认不搜索gore,anthro,human");
+            Main.setNextSender(message_type, user_id, group_id, "如未指定tag，默认加上eeveelution\n如未指定favcount或score，默认加上favcount:>400 score:>200\n如未指定以下tags，默认不搜索gore,anthro,human");
             return;
         }
         StringBuilder quest = dealInput(message, level);
@@ -140,7 +141,7 @@ level:
         String answer;
         answer = HttpURLConnectionUtil.doGet("https://e621.net/posts?tags=" + quest);
         if(answer == null){
-            main.Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
+            Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
             return;
         }
         int pos = answer.indexOf("data-id");
@@ -149,7 +150,7 @@ level:
         try {
             id = Integer.parseInt(answer.substring(pos + 9, answer.indexOf(' ', pos + 1) - 1));
         } catch (NumberFormatException e) {
-            main.Main.setNextSender(message_type, user_id, group_id, "None has been found.");
+            Main.setNextSender(message_type, user_id, group_id, "None has been found.");
             return;
         }
         pos = answer.indexOf("data-fav-count");
@@ -157,7 +158,7 @@ level:
 
         answer = HttpURLConnectionUtil.doGet("https://e621.net/posts/" + id);
         if(answer == null){
-            main.Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
+            Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
             return;
         }
 
@@ -171,7 +172,7 @@ level:
             retry++;
             if (retry > 3) {
                 retry = 0;
-                main.Main.setNextSender(message_type, user_id, group_id, "Get .webm.\nid: " + id);
+                Main.setNextSender(message_type, user_id, group_id, "Get .webm.\nid: " + id);
                 return;
             }
             System.out.println("retry");
@@ -186,7 +187,7 @@ level:
         quest.append("id:").append(id);
 
         retry = 0;
-        JSONObject J = JSONObject.parseObject(String.valueOf(main.Main.setNextSender(message_type, user_id, group_id, String.valueOf(quest))));
+        JSONObject J = JSONObject.parseObject(String.valueOf(Main.setNextSender(message_type, user_id, group_id, String.valueOf(quest))));
         lastMsg = J.getJSONObject("data").getLong("message_id");
     }
 
@@ -197,8 +198,7 @@ level:
 
         String[] sp = message.split(" ");
         if (sp.length <= 1) {
-            main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
-            //Main.Main.setNextSender(message_type, user_id, group_id, Arrays.toString(sp));
+            Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
             return;
         }
         try {
@@ -206,7 +206,7 @@ level:
             int setLevel;
             if (sp[0].equals("this")) {
                 if (sp.length != 2) {
-                    main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
+                    Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
                     return;
                 }
                 sp[0] = message_type;
@@ -218,14 +218,14 @@ level:
                 setLevel = Integer.parseInt(sp[1]);
             } else {
                 if(sp.length != 3) {
-                    main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
+                    Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
                     return;
                 }
                 id = Long.parseLong(sp[1]);
                 setLevel = Integer.parseInt(sp[2]);
             }
             if (setLevel >= level) {
-                main.Main.setNextSender(message_type, user_id, group_id, "权限不够");
+                Main.setNextSender(message_type, user_id, group_id, "权限不够");
                 return;
             }
             switch (sp[0]) {
@@ -236,7 +236,7 @@ level:
                         if (J.getLong("id") == id) {
                             J.put("level", setLevel);
                             JGroup.set(i, J);
-                            main.Main.setNextSender(message_type, user_id, group_id, "修改成功");
+                            Main.setNextSender(message_type, user_id, group_id, "修改成功");
                             flg = false;
                             break;
                         }
@@ -246,7 +246,7 @@ level:
                         J.put("id", id);
                         J.put("level", setLevel);
                         JGroup.add(J);
-                        main.Main.setNextSender(message_type, user_id, group_id, "新建成功");
+                        Main.setNextSender(message_type, user_id, group_id, "新建成功");
                     }
                 }
                 case "private" -> {
@@ -255,7 +255,7 @@ level:
                         JSONObject J = JPrivate.getJSONObject(i);
                         if (J.getLong("id") == id) {
                             JPrivate.set(i, JPrivate.getJSONObject(i).put("level", setLevel));
-                            main.Main.setNextSender(message_type, user_id, group_id, "修改成功");
+                            Main.setNextSender(message_type, user_id, group_id, "修改成功");
                             flg = false;
                             break;
                         }
@@ -265,7 +265,7 @@ level:
                         J.put("id", id);
                         J.put("level", setLevel);
                         JPrivate.add(J);
-                        main.Main.setNextSender(message_type, user_id, group_id, "新建成功");
+                        Main.setNextSender(message_type, user_id, group_id, "新建成功");
                     }
                 }
                 case "admin" -> {
@@ -274,7 +274,7 @@ level:
                         JSONObject J = JAdmin.getJSONObject(i);
                         if (J.getLong("id") == id) {
                             JAdmin.set(i, JAdmin.getJSONObject(i).put("level", setLevel));
-                            main.Main.setNextSender(message_type, user_id, group_id, "修改成功");
+                            Main.setNextSender(message_type, user_id, group_id, "修改成功");
                             flg = false;
                             break;
                         }
@@ -284,15 +284,15 @@ level:
                         J.put("id", id);
                         J.put("level", setLevel);
                         JAdmin.add(J);
-                        main.Main.setNextSender(message_type, user_id, group_id, "新建成功");
+                        Main.setNextSender(message_type, user_id, group_id, "新建成功");
                     }
                 }
-                default -> main.Main.setNextSender(message_type, user_id, group_id, "type: group/private/admin or this");
+                default -> Main.setNextSender(message_type, user_id, group_id, "type: group/private/admin or this");
             }
 
             saveLevel();
         } catch (NumberFormatException | IOException e) {
-            main.Main.setNextSender(message_type, user_id, group_id, e.getMessage());
+            Main.setNextSender(message_type, user_id, group_id, e.getMessage());
         }
     }
 
@@ -302,7 +302,7 @@ level:
 
         String[] sp = message.split(" ");
         if (sp.length != 2 && sp.length != 1) {
-            main.Main.setNextSender(message_type, user_id, group_id, "格式为：621.del (type id)/this");
+            Main.setNextSender(message_type, user_id, group_id, "格式为：621.del (type id)/this");
             return;
         }
         try {
@@ -325,17 +325,17 @@ level:
                         JSONObject J = JGroup.getJSONObject(i);
                         if (J.getLong("id") == id) {
                             if (J.getInteger("level") >= level) {
-                                main.Main.setNextSender(message_type, user_id, group_id, "权限不够");
+                                Main.setNextSender(message_type, user_id, group_id, "权限不够");
                             } else {
                                 JGroup.remove(i);
-                                main.Main.setNextSender(message_type, user_id, group_id, "删除成功");
+                                Main.setNextSender(message_type, user_id, group_id, "删除成功");
                                 flg = false;
                             }
                             break;
                         }
                     }
                     if (flg) {
-                        main.Main.setNextSender(message_type, user_id, group_id, "未找到");
+                        Main.setNextSender(message_type, user_id, group_id, "未找到");
                     }
                 }
                 case "private" -> {
@@ -344,17 +344,17 @@ level:
                         JSONObject J = JPrivate.getJSONObject(i);
                         if (J.getLong("id") == id) {
                             if (J.getInteger("level") >= level) {
-                                main.Main.setNextSender(message_type, user_id, group_id, "权限不够");
+                                Main.setNextSender(message_type, user_id, group_id, "权限不够");
                             } else {
                                 JPrivate.remove(i);
-                                main.Main.setNextSender(message_type, user_id, group_id, "删除成功");
+                                Main.setNextSender(message_type, user_id, group_id, "删除成功");
                                 flg = false;
                             }
                             break;
                         }
                     }
                     if (flg) {
-                        main.Main.setNextSender(message_type, user_id, group_id, "未找到");
+                        Main.setNextSender(message_type, user_id, group_id, "未找到");
                     }
                 }
                 case "admin" -> {
@@ -363,25 +363,25 @@ level:
                         JSONObject J = JAdmin.getJSONObject(i);
                         if (J.getLong("id") == id) {
                             if (J.getInteger("level") >= level) {
-                                main.Main.setNextSender(message_type, user_id, group_id, "权限不够");
+                                Main.setNextSender(message_type, user_id, group_id, "权限不够");
                             } else {
                                 JAdmin.remove(i);
-                                main.Main.setNextSender(message_type, user_id, group_id, "删除成功");
+                                Main.setNextSender(message_type, user_id, group_id, "删除成功");
                                 flg = false;
                             }
                             break;
                         }
                     }
                     if (flg) {
-                        main.Main.setNextSender(message_type, user_id, group_id, "未找到");
+                        Main.setNextSender(message_type, user_id, group_id, "未找到");
                     }
                 }
-                default -> main.Main.setNextSender(message_type, user_id, group_id, "type: group/private/admin or this");
+                default -> Main.setNextSender(message_type, user_id, group_id, "type: group/private/admin or this");
             }
 
             saveLevel();
         } catch (NumberFormatException | IOException e) {
-            main.Main.setNextSender(message_type, user_id, group_id, e.toString());
+            Main.setNextSender(message_type, user_id, group_id, e.toString());
         }
     }
 

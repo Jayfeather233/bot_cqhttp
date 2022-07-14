@@ -1,5 +1,6 @@
 package function.auto114514;
 
+import main.Main;
 import main.Processable;
 
 import java.io.FileNotFoundException;
@@ -38,12 +39,12 @@ public class Auto114514Main implements Processable {
         try {
             long num = Long.parseLong(message.substring(4).trim());
             if (num == 114514) {
-                main.Main.setNextSender(message_type, user_id, group_id, "这么臭的数字有必要论证吗（恼）");
+                Main.setNextSender(message_type, user_id, group_id, "这么臭的数字有必要论证吗（恼）");
                 return;
             }
-            main.Main.setNextSender(message_type, user_id, group_id, "" + num + " = " + getAns(num));
+            Main.setNextSender(message_type, user_id, group_id, "" + num + " = " + getAns(num));
         } catch (NumberFormatException e) {
-            main.Main.setNextSender(message_type, user_id, group_id, "需要一个数字，这事数字吗（恼）");
+            Main.setNextSender(message_type, user_id, group_id, "需要一个数字，这事数字吗（恼）");
         }
     }
 

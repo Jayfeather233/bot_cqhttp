@@ -1,13 +1,11 @@
 package function.autoForwardGenerator;
 
+import main.Main;
 import main.Processable;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.Objects;
 import java.util.Scanner;
-
-import static main.Main.setNextSender;
 
 public class AutoForwardGeneratorMain implements Processable {
     @Override
@@ -28,10 +26,10 @@ public class AutoForwardGeneratorMain implements Processable {
                 int i = 0;
                 while (i != s1.length() && s1.charAt(i) != ']') i++;
                 uin = s1.substring(0, i);
-                s1 = getNameInGroup(group_id, Long.parseLong(uin));
+                s1 = Main.getUserName(group_id, Long.parseLong(uin));
             } else {
                 uin = s1;
-                s1 = getNameInGroup(group_id, Long.parseLong(s1));
+                s1 = Main.getUserName(group_id, Long.parseLong(s1));
             }
             int pos = 0;
             do {
@@ -39,7 +37,7 @@ public class AutoForwardGeneratorMain implements Processable {
                 if (pos == -1) break;
                 int po1 = pos + 10;
                 while (s2.charAt(pos) != ']') pos++;
-                s2 = s2.substring(0, pos) + ",name=" + getNameInGroup(group_id, Long.parseLong(s2.substring(po1, pos))) + s2.substring(pos);
+                s2 = s2.substring(0, pos) + ",name=" + Main.getUserName(group_id, Long.parseLong(s2.substring(po1, pos))) + s2.substring(pos);
             } while (true);
 
             J = new JSONObject();
@@ -57,11 +55,11 @@ public class AutoForwardGeneratorMain implements Processable {
 
         if(message_type.equals("group")){
             J.put("group_id", group_id);
-            setNextSender("send_group_forward_msg", J);
+            Main.setNextSender("send_group_forward_msg", J);
         }
         else{
             J.put("user_id", user_id);
-            setNextSender("send_private_forward_msg", J);
+            Main.setNextSender("send_private_forward_msg", J);
         }
     }
 
@@ -70,26 +68,4 @@ public class AutoForwardGeneratorMain implements Processable {
         return message.startsWith("转发");
     }
 
-    private static String getNameInGroup(long group_id, long user_id) {
-        JSONObject J = new JSONObject();
-        J.put("group_id", group_id);
-        J.put("user_id", user_id);
-
-        J = JSONObject.parseObject(Objects.requireNonNull(setNextSender("get_group_member_info", J)).toString());
-        if (J.getString("status").equals("failed")) {
-            J = new JSONObject();
-            J.put("user_id", user_id);
-            J = JSONObject.parseObject(Objects.requireNonNull(setNextSender("get_stranger_info", J)).toString());
-        }
-        J = J.getJSONObject("data");
-
-
-        String uName;
-        if (J.containsKey("card") && !J.getString("card").equals("")) {
-            uName = J.getString("card");
-        } else if (J.containsKey("nickname")) {
-            uName = J.getString("nickname");
-        } else uName = J.getString("user_id");
-        return uName;
-    }
 }

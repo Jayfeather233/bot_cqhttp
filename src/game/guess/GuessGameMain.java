@@ -1,5 +1,6 @@
 package game.guess;
 
+import main.Main;
 import main.Processable;
 
 import java.util.HashMap;
@@ -112,6 +113,6 @@ public class GuessGameMain implements Processable {
         if (msg_type.equals("group")) {
             msg = "[CQ:at,qq=" + user_id + "] " + msg;
         }
-        main.Main.setNextSender(msg_type, user_id, group_id, msg);
+        Main.setNextSender(msg_type, user_id, group_id, msg);
     }
 }

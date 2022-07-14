@@ -2,6 +2,7 @@ package function.autoreply;
 
 import com.alibaba.fastjson.JSONObject;
 import main.Processable;
+import main.Main;
 
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -53,27 +54,27 @@ public class AutoReplyMain implements Processable {
             if(S.hasNext()) ans= ans + S.nextLine();
             replyData.put(key,ans);
             save();
-            main.Main.setNextSender(message_type,user_id,group_id,"添加成功");
+            Main.setNextSender(message_type,user_id,group_id,"添加成功");
         } else if(message.startsWith("删除") && (user_id == ((long)34258)*100000+11925 || user_id == 1826559889)){
             message = message.substring(2).trim();
             if(replyData.containsKey(message)){
                 replyData.remove(message);
                 save();
-                main.Main.setNextSender(message_type,user_id,group_id,"删除成功");
+                Main.setNextSender(message_type,user_id,group_id,"删除成功");
             } else {
-                main.Main.setNextSender(message_type,user_id,group_id,"未找到");
+                Main.setNextSender(message_type,user_id,group_id,"未找到");
             }
         } else if(message.equals("帮助")) {
             StringBuilder sb = new StringBuilder("##帮助\n");
             for (String u : replyData.keySet()) {
                 sb.append("##").append(u).append('\n');
             }
-            main.Main.setNextSender(message_type,user_id,group_id,sb.toString());
+            Main.setNextSender(message_type,user_id,group_id,sb.toString());
         } else {
             if(replyData.containsKey(message)){
-                main.Main.setNextSender(message_type,user_id,group_id,replyData.getString(message));
+                Main.setNextSender(message_type,user_id,group_id,replyData.getString(message));
             } else {
-                main.Main.setNextSender(message_type,user_id,group_id,"未找到匹配内容");
+                Main.setNextSender(message_type,user_id,group_id,"未找到匹配内容");
             }
         }
     }
