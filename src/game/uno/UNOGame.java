@@ -359,10 +359,11 @@ public class UNOGame implements Runnable {
                         }
                         nowPlayer = nextPlayer();
                         colorChoosing = false;
-                        continue;
                     } else {
                         sendPrivateMsg(bufferID, "颜色ID错误");
+                        needOutput = false;
                     }
+                    continue;
                 } else if (playID == -1) {
                     if (!isDrawn) {
                         if (needDraw == 0) {
@@ -388,6 +389,7 @@ public class UNOGame implements Runnable {
                         int u = play(bufferID, playID);
                         if (u == 4) {
                             sendPrivateMsg(bufferID, "不能打出这张牌");
+                            needOutput = false;
                         } else if (u == 5) {
                             sendPrivateMsg(bufferID, "请选择颜色：1.红 2.黄 3.蓝 4.绿");
                             colorChoosing = true;
@@ -395,10 +397,12 @@ public class UNOGame implements Runnable {
                             sendPrivateMsg(bufferID, "打出成功");
                         } else {
                             sendPrivateMsg(bufferID, "Unknown Error.");
+                            needOutput = false;
                         }
                         isDrawn = false;
                     } catch (IndexOutOfBoundsException e) {
                         sendPrivateMsg(bufferID, "ID过大");
+                        needOutput = false;
                     }
                     continue;
                 }
