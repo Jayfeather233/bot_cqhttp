@@ -16,6 +16,7 @@ public class MemberChangeMain implements EventProcessable {
 
     @Override
     public boolean check(JSONObject J) {
+        if(!J.getString("post_type").equals("notice")) return false;
         return J.getString("notice_type").equals("group_decrease") || J.getString("notice_type").equals("group_increase");
     }
 }
