@@ -65,7 +65,7 @@ public class GetImage621Main implements Processable {
         String[] qs = String.valueOf(sb).split(" ");
         StringBuilder quest = new StringBuilder();
         for (String q : qs) {
-            if (q.startsWith("score:>") && level <= 0) continue;
+            if (q.startsWith("score:>") && level <= 2) continue;
             if (q.startsWith("rating:q") && level <= 2) continue;
             if (q.startsWith("rating:e") && level <= 3) continue;
 
@@ -75,8 +75,8 @@ public class GetImage621Main implements Processable {
         }
         if (quest.length() == 0) quest.append("eeveelution");
         if (!input.contains("id:")) {
-            if (!input.contains("favcount") && !input.contains("score") && level <= 0)
-                quest.append("+favcount:>0").append("+score:>0");
+            if (!input.contains("favcount") && !input.contains("score") && level <= 2)
+                quest.append("+favcount:>10").append("+score:>10");
             else if (!input.contains("favcount") && !input.contains("score"))
                 quest.append("+favcount:>400").append("+score:>200");
             if (!input.contains("order")) quest.append("+order:random");
