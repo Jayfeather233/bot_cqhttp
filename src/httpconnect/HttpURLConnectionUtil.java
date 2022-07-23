@@ -20,7 +20,7 @@ public class HttpURLConnectionUtil {
      * @param httpUrl 连接
      * @return 响应数据
      */
-    public static String doGet(String httpUrl) {
+    public static String doGet(String httpUrl) throws SocketTimeoutException{
         //链接
 
         List<Proxy> l;

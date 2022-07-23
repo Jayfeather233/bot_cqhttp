@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.*;
+import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
 public class GetImage621Main implements Processable {
@@ -89,10 +90,10 @@ public class GetImage621Main implements Processable {
     public void process(String message_type, String message, long group_id, long user_id) {
 
         message = message.toLowerCase();
-        if (message.equals("621.recall") && lastMsg != 0){
+        if (message.equals("621.recall") && lastMsg != 0) {
             JSONObject J = new JSONObject();
             J.put("message_id", lastMsg);
-            Main.setNextSender("delete_msg",J);
+            Main.setNextSender("delete_msg", J);
             return;
         }
         if (message.startsWith("621.set")) {
@@ -105,14 +106,14 @@ public class GetImage621Main implements Processable {
         }
         if (message.equals("621.level")) {
             Main.setNextSender(message_type, user_id, group_id,
-"""
-level:
-    0: safe feral pokemon
-    1: safe feral
-    2: safe
-    3: question
-    4: explicit feral or safe/q
-    5: explicit""");
+                    """
+                            level:
+                                0: safe feral pokemon
+                                1: safe feral
+                                2: safe
+                                3: question
+                                4: explicit feral or safe/q
+                                5: explicit""");
             return;
         }
 
@@ -138,10 +139,14 @@ level:
         StringBuilder quest = dealInput(message, level);
         System.out.println(quest);
 
-        String answer;
-        answer = HttpURLConnectionUtil.doGet("https://e621.net/posts?tags=" + quest);
-        if(answer == null){
-            Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
+        String answer = null;
+        try {
+            answer = HttpURLConnectionUtil.doGet("https://e621.net/posts?tags=" + quest);
+        } catch (SocketTimeoutException e) {
+            Main.setNextSender(message_type, user_id, group_id, "网站链接超时");
+        }
+        if (answer == null) {
+            Main.setNextSender(message_type, user_id, group_id, "获取图片出错");
             return;
         }
         int pos = answer.indexOf("data-id");
@@ -156,9 +161,13 @@ level:
         pos = answer.indexOf("data-fav-count");
         int fav_count = Integer.parseInt(answer.substring(pos + 16, answer.indexOf(' ', pos) - 1));
 
-        answer = HttpURLConnectionUtil.doGet("https://e621.net/posts/" + id);
-        if(answer == null){
-            Main.setNextSender(message_type,user_id,group_id,"获取图片出错");
+        try {
+            answer = HttpURLConnectionUtil.doGet("https://e621.net/posts/" + id);
+        } catch (SocketTimeoutException e) {
+            Main.setNextSender(message_type, user_id, group_id, "网站链接超时");
+        }
+        if (answer == null) {
+            Main.setNextSender(message_type, user_id, group_id, "获取图片出错");
             return;
         }
 
@@ -188,7 +197,11 @@ level:
 
         retry = 0;
         JSONObject J = JSONObject.parseObject(String.valueOf(Main.setNextSender(message_type, user_id, group_id, String.valueOf(quest))));
-        lastMsg = J.getJSONObject("data").getLong("message_id");
+        if(J.getString("status").equals("failed")){
+            Main.setNextSender(message_type, user_id, group_id, "发送图片失败");
+        } else {
+            lastMsg = J.getJSONObject("data").getLong("message_id");
+        }
     }
 
     private void adminProcessSet(String message_type, String message, long group_id, long user_id) {
@@ -217,7 +230,7 @@ level:
                 }
                 setLevel = Integer.parseInt(sp[1]);
             } else {
-                if(sp.length != 3) {
+                if (sp.length != 3) {
                     Main.setNextSender(message_type, user_id, group_id, "格式为：621.set (type id)/this level");
                     return;
                 }
