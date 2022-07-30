@@ -6,6 +6,7 @@ import event.poke.pokeMain;
 import function.auto114514.Auto114514Main;
 import function.autoForwardGenerator.AutoForwardGeneratorMain;
 import function.autoreply.AutoReplyMain;
+import function.compiler.compilerMain;
 import function.getImage621.GetImage621Main;
 import function.getimage2d.GetImage2DMain;
 import function.imageGenerator.ImageGeneratorMain;
@@ -138,6 +139,7 @@ public class Main {
         features.add(new Auto114514Main());
         features.add(new GetImage2DMain());
         features.add(new AutoReplyMain());
+        features.add(new compilerMain());
 
         events.add(new friendAddMain());
         events.add(new MemberChangeMain());

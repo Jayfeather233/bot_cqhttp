@@ -13,6 +13,7 @@
 - 来点二次元，来源：[dmoe](https://www.dmoe.cc)
 - 关键词回复
 - 群成员变动提醒
+- 在线编译代码
 
 ### 关于源文件
 
@@ -58,6 +59,7 @@ A bot based on [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - Get Japanese anime image. From [dmoe](www.dmoe.cc).
 - Keywords reply.
 - React to group member change.
+- Online compiler.
 
 ### About the source files
 
